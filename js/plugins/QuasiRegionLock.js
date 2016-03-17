@@ -4,6 +4,7 @@
 // Last Update: February 8, 2016
 //============================================================================
 // ** Terms of Use
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //============================================================================
 // How to install:
@@ -21,7 +22,8 @@ Imported.Quasi_RegionLock = 1.04;
 
 //=============================================================================
  /*:
- * @plugindesc Allows you to let Characters only move on certain Regions.
+ * @plugindesc Quasi Movement Addon: Allows you to let Characters only move on certain Regions.
+ * Version 1.04
  * @author Quasi      Site: http://quasixi.com
  *
  * @help

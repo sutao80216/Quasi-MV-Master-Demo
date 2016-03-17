@@ -22,6 +22,7 @@ Imported.Quasi_Sprite = 1.04;
 //=============================================================================
  /*:
  * @plugindesc Lets you configure Spritesheets
+ * Version 1.04
  * @author Quasi      Site: http://quasixi.com
  *
  * @help
@@ -37,13 +38,6 @@ Imported.Quasi_Sprite = 1.04;
  *  - http://forums.rpgmakerweb.com/index.php?/topic/57648-quasi-sprite/
  */
 //=============================================================================
-
-//-----------------------------------------------------------------------------
-// New Classes
-
-function Sprite_CharacterCostume() {
-  this.initialize.apply(this, arguments);
-}
 
 //-----------------------------------------------------------------------------
 // Quasi Sprite
@@ -63,40 +57,6 @@ var QuasiSprite = {};
     xhr.send();
   };
   QuasiSprite.loadSettings();
-
-  QuasiSprite.costumes = [];
-  QuasiSprite.costumes[0] = {}; // weapons
-  QuasiSprite.costumes[1] = {}; // armors
-  QuasiSprite.equipCostume = function(equip) {
-    var data = !equip.atypeId ? this.costumes[0] : this.costumes[1];
-    var id   = equip.baseItemId || equip.id;
-    if (!data[id]) {
-      var dataBase = !equip.atypeId ? $dataWeapons : $dataArmors;
-      var note     = equip.note || dataBase[id].note;
-      var costume  = /<costume>([\s\S]*)<\/costume>/i.exec(note);
-      data[id] = {};
-      if (!costume) {
-        costume = /<costume:(.*?)>/i.exec(note);
-        if (costume) {
-          data[id] = {"default": costume[1]};
-        }
-      } else {
-        data[id] = this.stringToObj(costume[1]);
-      }
-    }
-    return data[id];
-  };
-
-  QuasiSprite.stringToObj = function(string) {
-    var ary = string.split('\n');
-    var obj = {};
-    ary = ary.filter(function(i) { return i != ""; });
-    ary.forEach(function(e) {
-      var s = /^(.*):(.*)/.exec(e);
-      if (s) obj[s[1]] = s[2].trim();
-    });
-    return obj;
-  };
 
   //-----------------------------------------------------------------------------
   // Game_Interpreter
@@ -254,20 +214,6 @@ var QuasiSprite = {};
     return this._isQChara ? this._isQChara[1] : false;
   };
 
-  Game_CharacterBase.prototype.requestCostumeChange = function() {
-    if (this.constructor === Game_Player || this.constructor === Game_Follower) {
-      if (!this.actor()) return false;
-      return this.actor()._requestCostumeChange;
-    }
-    return false;
-  };
-
-  Game_CharacterBase.prototype.finishCostumeChange = function() {
-    if (this.constructor === Game_Player || this.constructor === Game_Follower) {
-      this.actor()._requestCostumeChange = false;
-    }
-  };
-
   //-----------------------------------------------------------------------------
   // Game_Player
   //
@@ -285,38 +231,9 @@ var QuasiSprite = {};
   };
 
   //-----------------------------------------------------------------------------
-  // Game_Actor
-  //
-  // The game object class for an actor.
-
-  var Alias_Game_Actor_initEquips = Game_Actor.prototype.initEquips;
-  Game_Actor.prototype.initEquips = function(equips) {
-    Alias_Game_Actor_initEquips.call(this, equips);
-    this._requestCostumeChange = true;
-  };
-
-  var Alias_Game_Actor_changeEquip = Game_Actor.prototype.changeEquip;
-  Game_Actor.prototype.changeEquip = function(slotId, item) {
-    Alias_Game_Actor_changeEquip.call(this, slotId, item);
-    this._requestCostumeChange = true;
-  };
-
-  var Alias_Game_Actor_forceChangeEquip = Game_Actor.prototype.forceChangeEquip;
-  Game_Actor.prototype.forceChangeEquip = function(slotId, item) {
-    Alias_Game_Actor_forceChangeEquip.call(this, slotId, item);
-    this._requestCostumeChange = true;
-  };
-
-  //-----------------------------------------------------------------------------
   // Sprite_Character
   //
   // The sprite for displaying a character.
-
-  var Alias_Sprite_Character_initMembers = Sprite_Character.prototype.initMembers;
-  Sprite_Character.prototype.initMembers = function() {
-    Alias_Sprite_Character_initMembers.call(this);
-    this._costumes = null;
-  };
 
   var Alias_Sprite_Character_characterBlockX = Sprite_Character.prototype.characterBlockX;
   Sprite_Character.prototype.characterBlockX = function() {
@@ -371,82 +288,6 @@ var QuasiSprite = {};
       return this.bitmap.height / this._character._qSprite.rows;
     }
     return Alias_Sprite_Character_patternHeight.call(this);
-  };
-
-  var Alias_Sprite_Character_update = Sprite_Character.prototype.update;
-  Sprite_Character.prototype.update = function() {
-    Alias_Sprite_Character_update.call(this);
-    this.updateCostume();
-  };
-
-  Sprite_Character.prototype.updateCostume = function() {
-    if (typeof(this._character.actor) !== "function") {
-      return;
-    }
-    if (this.isCostumeChanged()) this.setCostume();
-  };
-
-  Sprite_Character.prototype.isCostumeChanged = function() {
-    return !this._costumes || this._character.requestCostumeChange();
-  };
-
-  Sprite_Character.prototype.setCostume = function() {
-    this._costumes = {};
-    var actor  = this._character.actor();
-    if (!actor) return;
-    var equips = actor.equips();
-    for (var i = 0; i < equips.length; i++) {
-      if (!equips[i]) continue;
-      var id      = equips[i].baseItemId || equips[i].id;
-      var costume = QuasiSprite.equipCostume(equips[i]);
-      var hasCostume = costume[actor.actorId()] || costume["default"];
-      if (!hasCostume) continue;
-      if (!this._costumes[i]) {
-        this._costumes[i] = new Sprite_CharacterCostume(this._character);
-        this.addChild(this._costumes[i]);
-      }
-      this._costumes[i].setCharacterBitmap(hasCostume);
-    }
-    this._character.finishCostumeChange();
-  };
-
-  //-----------------------------------------------------------------------------
-  // Sprite_CharacterCostume
-  //
-  // The sprite for displaying a characters costume
-
-  Sprite_CharacterCostume.prototype = Object.create(Sprite_Character.prototype);
-  Sprite_CharacterCostume.prototype.constructor = Sprite_CharacterCostume;
-
-  Sprite_CharacterCostume.prototype.isQCharacter = function() {
-    if (this._isQChara === undefined) {
-      this._isQChara = this._costumeName.match(/^#(.+?)-/);
-    }
-    return this._isQChara ? this._isQChara[1] : false;
-  };
-
-  Sprite_CharacterCostume.prototype.update = function() {
-    Sprite_Base.prototype.update.call(this);
-    this.updateFrame();
-    this.updateOther();
-  };
-
-  Sprite_CharacterCostume.prototype.isTile = function() {
-    return false;
-  };
-
-  Sprite_CharacterCostume.prototype.setCharacterBitmap = function(name) {
-    this._isQChara = undefined;
-    this._costumeName = name;
-    this.bitmap = ImageManager.loadCharacter(name);
-    this._isBigCharacter = ImageManager.isBigCharacter(name);
-  };
-
-  Sprite_CharacterCostume.prototype.hasPose = function(pose) {
-    if (this.isQCharacter()) {
-      return QuasiSprite.json[this.isQCharacter()].poses.hasOwnProperty(pose);
-    }
-    return false;
   };
 
   //-----------------------------------------------------------------------------
@@ -616,60 +457,5 @@ if (Imported.YEP_X_ActSeqPack2) {
         this.requestMotion(motion);
       }
     }
-  };
-
-  //-----------------------------------------------------------------------------
-  // Window_Base
-  //
-  // The superclass of all windows within the game.
-
-  var Alias_Window_Base_drawActorCharacter = Window_Base.prototype.drawActorCharacter;
-  Window_Base.prototype.drawActorCharacter = function(actor, x, y) {
-    Alias_Window_Base_drawActorCharacter.call(this, actor, x, y);
-    var equips = actor.equips();
-    for (var i = 0; i < equips.length; i++) {
-      if (!equips[i]) continue;
-      var id      = equips[i].baseItemId || equips[i].id;
-      var costume = QuasiSprite.equipCostume(equips[i]);
-      var costumeName = costume[actor.actorId()] || costume["default"];
-      if (!costumeName) continue;
-      this.drawCharacter(costumeName, actor.characterIndex(), x, y);
-    }
-  };
-
-  var Alias_Window_SavefileList_drawPartyCharacters = Window_SavefileList.prototype.drawPartyCharacters;
-  Window_SavefileList.prototype.drawPartyCharacters = function(info, x, y) {
-    Alias_Window_SavefileList_drawPartyCharacters.call(this, info, x, y);
-    if (info.costumes) {
-      for (var i = 0; i < info.costumes.length; i++) {
-        for (var j = 0; j < info.costumes[i].length; j++) {
-          var data = info.costumes[i][j];
-          if (!data) continue;
-          this.drawCharacter(data, 0, x + i * 48, y);
-        }
-      }
-    }
-  };
-
-  var Alias_DataManager_makeSavefileInfo = DataManager.makeSavefileInfo;
-  DataManager.makeSavefileInfo = function() {
-    var info = Alias_DataManager_makeSavefileInfo.call(this);
-    info.costumes = $gameParty.costumesForSavefile();
-    return info;
-  };
-
-  Game_Party.prototype.costumesForSavefile = function() {
-    return this.battleMembers().map(function(actor) {
-      var costumes = [];
-      var equips = actor.equips();
-      for (var i = 0; i < equips.length; i++) {
-        if (!equips[i]) continue;
-        var id      = equips[i].baseItemId || equips[i].id;
-        var costume = QuasiSprite.equipCostume(equips[i]);
-        var costumeName = costume[actor.actorId()] || costume["default"];
-        costumes.push(costumeName);
-      }
-      return costumes;
-    });
   };
 })(QuasiSprite);

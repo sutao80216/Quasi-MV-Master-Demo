@@ -4,7 +4,7 @@
 // Last Update: March 2, 2016
 //============================================================================
 // ** Terms of Use
-// http://quasixi.com/mv/
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //============================================================================
 // How to install:
@@ -22,7 +22,8 @@ Imported.Quasi_MovementPlus = 1.11;
 
 //=============================================================================
  /*:
- * @plugindesc Adds extra features to Quasi Movement
+ * @plugindesc Quasi Movement Addon: Adds extra features to Quasi Movement
+ * Version 1.11
  * @author Quasi      Site: http://quasixi.com
  *
  * @param Extra Interaction Distance

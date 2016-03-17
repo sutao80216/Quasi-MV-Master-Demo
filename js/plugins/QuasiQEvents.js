@@ -4,7 +4,7 @@
 // Last Update: February 8, 2016
 //============================================================================
 // ** Terms of Use
-// http://quasixi.com/mv/
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //============================================================================
 // How to install:
@@ -19,6 +19,7 @@ Imported.Quasi_QEvents = 1.00;
 //=============================================================================
  /*:
  * @plugindesc Extends Common Events functionality
+ * Version 1.00
  * @author Quasi      Site: http://quasixi.com
  *
  * @help

@@ -1,9 +1,10 @@
 //=============================================================================
 // Quasi Popup
 // Version: 1.00
-// Last Update: March -, 2016
+// Last Update: March 17, 2016
 //=============================================================================
 // ** Terms of Use
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //=============================================================================
 // Downloading from Github
@@ -12,6 +13,7 @@
 //=============================================================================
 // How to install:
 //  - Save this file as "QuasiPopup.js" in your js/plugins/ folder
+//  - Add plugin through the plugin manager
 //  - Configure as needed
 //  - Open the Help menu for setup guide or visit one of the following:
 //  - - http://quasixi.com/quasi-popup/
@@ -23,7 +25,7 @@ Imported.QuasiPopup = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc Popups
+ * @plugindesc Allows to create Popups on Map
  * Version: 1.00
  * <QuasiPopup>
  * @author Quasi       Site: http://quasixi.com

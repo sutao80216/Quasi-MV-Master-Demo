@@ -4,7 +4,7 @@
 // Last Update: February 24, 2016
 //============================================================================
 // ** Terms of Use
-// http://quasixi.com/mv/
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //============================================================================
 // How to install:
@@ -23,6 +23,7 @@ Imported.Quasi_Depths = 0.95;
 //=============================================================================
  /*:
  * @plugindesc Quasi Movement Addon: Adds depth with Region Maps
+ * Version 0.95
  * @author Quasi      Site: http://quasixi.com
  *
  * @param Max Depth Step -DISABLED

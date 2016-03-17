@@ -1,9 +1,10 @@
 //=============================================================================
 // Quasi Simple Shadows
-// Version: 1.00
-// Last Update: March 14, 2016 ( PI Day! )
+// Version: 1.01
+// Last Update: March 17, 2016
 //=============================================================================
 // ** Terms of Use
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //=============================================================================
 // Downloading from Github
@@ -12,6 +13,7 @@
 //=============================================================================
 // How to install:
 //  - Save this file as "QuasiSimpleShadows.js" in your js/plugins/ folder
+//  - Add plugin through the plugin manager
 //  - Configure as needed
 //  - Open the Help menu for setup guide or visit one of the following:
 //  - - http://quasixi.com/quasi-simple-shadows/
@@ -19,11 +21,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSimpleShadows = 1.00;
+Imported.QuasiSimpleShadows = 1.01;
 
 //=============================================================================
  /*:
- * @plugindesc
+ * @plugindesc Adds Simple Shadows to characters
+ * Version 1.01
  * <QuasiSimpleShadows>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -129,16 +132,27 @@ var QuasiSimpleShadows = {};
   var Alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     if (command.toLowerCase() === "quasi") {
-      if (args[0].toLowerCase() === "addshadow") {
+      if (args[0].toLowerCase() === "addshadowsource") {
         var id = Number(args[1]);
         var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
         var radius = Number(args[2]);
         chara.setupSimpleShadow(radius);
       }
-      if (args[0].toLowerCase() === "removeshadow") {
+      if (args[0].toLowerCase() === "removeshadowsource") {
         var id = Number(args[1]);
         var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
         chara.clearSimpleShadow();
+      }
+      if (args[0].toLowerCase() === "hideshadow") {
+        var id = Number(args[1]);
+        var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
+        chara.setHasShadow(false);
+      }
+
+      if (args[0].toLowerCase() === "showshadow") {
+        var id = Number(args[1]);
+        var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
+        chara.setHasShadow(true);
       }
     }
     Alias_Game_Interpreter_pluginCommand.call(this, command, args);
@@ -155,6 +169,7 @@ var QuasiSimpleShadows = {};
     Alias_Game_CharacterBase_initMembers.call(this);
     this._simpleShadowRadius = 0;
     this._addedShadows = null;
+    this._hasShadow = true;
   };
 
   Game_CharacterBase.prototype.addShadow = function(source) {
@@ -167,6 +182,10 @@ var QuasiSimpleShadows = {};
 
   Game_CharacterBase.prototype.castsShadows = function() {
     return this._simpleShadowRadius > 0;
+  };
+
+  Game_CharacterBase.prototype.hasShadow = function() {
+    return this._hasShadow;
   };
 
   var Alias_Game_CharacterBase_update = Game_CharacterBase.prototype.update;
@@ -199,11 +218,26 @@ var QuasiSimpleShadows = {};
     }
   };
 
+  Game_Character.prototype.setHasShadow = function(bool) {
+    this._hasShadow = bool;
+  };
+
   //-----------------------------------------------------------------------------
   // Game_Event
   //
   // The game object class for an event. It contains functionality for event page
   // switching and running parallel process events.
+
+  var Alias_Game_Event_initialize = Game_Event.prototype.initialize;
+  Game_Event.prototype.initialize = function(mapId, eventId) {
+    Alias_Game_Event_initialize.call(this, mapId, eventId);
+    this.setDefaultHasShadow();
+  };
+
+  Game_Event.prototype.setDefaultHasShadow = function() {
+    var notes = this.event().note || "";
+    this._hasShadow = !(/<noshadow>/i.test(notes));
+  };
 
   Game_Event.prototype.getSimpleShadow = function() {
     var notes = this.event().note || "";
@@ -217,6 +251,8 @@ var QuasiSimpleShadows = {};
       }
     }
   };
+
+
 
   //-----------------------------------------------------------------------------
   // Sprite_Character
@@ -285,7 +321,7 @@ var QuasiSimpleShadows = {};
 
   Sprite_CharacterShadow.prototype.update = function() {
     Sprite_Base.prototype.update.call(this);
-    if (!this._source.castsShadows()) {
+    if (!this._source.castsShadows() || !this._character.hasShadow()) {
       this.alpha = 0;
       return;
     }

@@ -4,6 +4,7 @@
 // Last Update: March 12, 2016
 //=============================================================================
 // ** Terms of Use
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //=============================================================================
 // Downloading from Github
@@ -12,10 +13,11 @@
 //=============================================================================
 // How to install:
 //  - Save this file as "QuasiPuzzleA.js" in your js/plugins/ folder
+//  - Add plugin through the plugin manager
 //  - Configure as needed
 //  - Open the Help menu for setup guide or visit one of the following:
 //  - - http://quasixi.com/quasi-puzzle-a
-//  - - http://forums.rpgmakerweb.com/---
+//  - - http://forums.rpgmakerweb.com/index.php?/topic/58256-quasi-puzzle/
 //=============================================================================
 
 var Imported = Imported || {};
@@ -38,7 +40,7 @@ Imported.QuasiPuzzleA = 1.01;
  *
  * Other Links
  *  - https://github.com/quasixi/RPG-Maker-MV
- *  - http://forums.rpgmakerweb.com/---
+ *  - http://forums.rpgmakerweb.com/index.php?/topic/58256-quasi-puzzle/
  * ============================================================================
  */
 //=============================================================================

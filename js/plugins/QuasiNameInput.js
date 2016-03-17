@@ -21,7 +21,8 @@ Imported.Quasi_NameInput = 1.0;
 
 //=============================================================================
  /*:
- * @plugindesc Changes the Name Input Scene to allow for keyboard input.
+ * @plugindesc Quasi Input addon: Adds Keyboard Input to Name Input Scene
+ * Version 1.00
  * @author Quasi      Site: http://quasixi.com
  *
  * @param Show Window with Keys

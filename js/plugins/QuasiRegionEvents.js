@@ -4,6 +4,7 @@
 // Last Update: February 8, 2016
 //============================================================================
 // ** Terms of Use
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //============================================================================
 // How to install:
@@ -21,7 +22,8 @@ Imported.Quasi_RegionEvents = 1.0;
 
 //=============================================================================
  /*:
- * @plugindesc Regions and Region Maps can activate events on touch
+ * @plugindesc Quasi Movement Addon: Regions and Region Maps can activate events on touch
+ * Version 1.00
  * @author Quasi      Site: http://quasixi.com
  *
  * @help

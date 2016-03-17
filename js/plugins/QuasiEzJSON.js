@@ -29,7 +29,8 @@ Imported.Quasi_EZJSON = 1.01;
 
 //=============================================================================
  /*:
- * @plugindesc
+ * @plugindesc A JSON File editor
+ * Version 1.01
  * @author Quasi      Site: http://quasixi.com
  *
  * @help

@@ -4,7 +4,7 @@
 // Last Update: February 14, 2016
 //============================================================================
 // ** Terms of Use
-// http://quasixi.com/mv/
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //============================================================================
 // How to install:
@@ -22,7 +22,8 @@ Imported.Quasi_Sight = 1.06;
 
 //=============================================================================
  /*:
- * @plugindesc A line of sight script with real time shadow casting.
+ * @plugindesc Quasi Movement Addon: A line of sight script with real time shadow casting.
+ * Version 1.06
  * @author Quasi      Site: http://quasixi.com
  *
  * @param Show Sight

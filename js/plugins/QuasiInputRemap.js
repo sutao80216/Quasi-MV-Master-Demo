@@ -25,7 +25,8 @@ Imported.Quasi_InputRemap = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc Adds Key remapping to Options menu
+ * @plugindesc Quasi Input Addon: Adds Key remapping to Options menu
+ * Version 1.03
  * @author Quasi      Site: http://quasixi.com
  *
  * @param Hide Keys

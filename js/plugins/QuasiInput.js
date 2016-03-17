@@ -25,6 +25,7 @@ Imported.Quasi_Input = 1.03;
 //=============================================================================
  /*:
  * @plugindesc Adds additional keys to Input class, and allows remapping keys.
+ * Version 1.03
  * @author Quasi      Site: http://quasixi.com
  *
  * @param Ok

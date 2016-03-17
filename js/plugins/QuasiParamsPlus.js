@@ -4,7 +4,7 @@
 // Last Update: March 17, 2016
 //=============================================================================
 // ** Terms of Use
-// http://quasixi.com/mv/
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //=============================================================================
 // How to install:
@@ -21,7 +21,7 @@ Imported.Quasi_ParamsPlus = 1.12;
 //=============================================================================
  /*:
  * @plugindesc Adds improvements to parameters
- * Version: 1.11
+ * Version: 1.12
  * <QuasiParamsPlus>
  * @author Quasi      Site: http://quasixi.com
  *
@@ -191,9 +191,6 @@ Imported.Quasi_ParamsPlus = 1.12;
  *  - http://forums.rpgmakerweb.com/index.php?/topic/48777-quasi-params-plus/
  */
 //=============================================================================
-
-var centerX = $gamePlayer.cx();
-var centerY = $gamePlayer.cy();
 
 var QuasiParams = (function() {
   var Params = {};

@@ -1,9 +1,10 @@
 //============================================================================
 // Quasi Movement
-// Version: 1.26
-// Last Update: March 2, 2016
+// Version: 1.27
+// Last Update: March 17, 2016
 //============================================================================
 // ** Terms of Use
+// http://quasixi.com/terms-of-use/
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
 //============================================================================
 // Downloading from Github
@@ -21,7 +22,7 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Movement = 1.26;
+Imported.Quasi_Movement = 1.27;
 
 //=============================================================================
  /*:
