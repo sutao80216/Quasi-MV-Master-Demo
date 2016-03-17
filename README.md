@@ -4,11 +4,11 @@ Quasi MV Master Demo
 <b>Downloading Demo:</b>
 
 <b>Installing Demo:</b>
-1. Open RPG Maker MV
-2. Create new project
-3. After new project is created, close the new project
-4. Copy the files and folders from this Demo folder into the new project and accept to replace files
-5. Open project and play test.
+ * Open RPG Maker MV
+ * Create new project
+ * After new project is created, close the new project
+ * Copy the files and folders from this Demo folder into the new project and accept to replace files
+ * Open project and play test.
 
 
 <b>TERMS OF USE FOR NON-COMMERCIAL AND COMMERCIAL:</b>
