@@ -2,6 +2,8 @@ Quasi MV Master Demo
 ====================
 
 <b>Downloading Demo:</b>
+Click on the Download Zip button on the upper right of the page<br>
+![2016-03-17 13_45_11-quasixi_quasi-mv-master-demo_ master demo for quasi s plugins for rpg maker mv](https://cloud.githubusercontent.com/assets/9346563/13860612/87321562-ec46-11e5-88f0-c0da7027c441.png)
 
 <b>Installing Demo:</b>
  * Open RPG Maker MV
@@ -9,7 +11,6 @@ Quasi MV Master Demo
  * After new project is created, close the new project
  * Copy the files and folders from this Demo folder into the new project and accept to replace files
  * Open project and play test.
-
 
 <b>TERMS OF USE FOR NON-COMMERCIAL AND COMMERCIAL:</b>
  * Free to use and modify.
