@@ -42,7 +42,7 @@ Imported.Quasi_Sprite = 1.04;
 //-----------------------------------------------------------------------------
 // Quasi Sprite
 
-var QuasiSprite = {};
+var QuasiSprite = { ready: false };
 (function(QuasiSprite) {
   QuasiSprite.loadSettings = function() {
     var xhr = new XMLHttpRequest();
@@ -52,11 +52,17 @@ var QuasiSprite = {};
     xhr.onload = function() {
       if (xhr.status < 400) {
         QuasiSprite.json = JSON.parse(xhr.responseText);
+        QuasiSprite.ready = true;
       }
     };
     xhr.send();
   };
   QuasiSprite.loadSettings();
+
+  var Alias_Scene_Base_isReady = Scene_Base.prototype.isReady;
+  Scene_Base.prototype.isReady = function() {
+    return Alias_Scene_Base_isReady.call(this) && QuasiSprite.ready;
+  };
 
   //-----------------------------------------------------------------------------
   // Game_Interpreter
@@ -425,7 +431,7 @@ if (Imported.YEP_X_ActSeqPack2) {
 
   var Alias_BattleManager_processActionSequence = BattleManager.processActionSequence;
   BattleManager.processActionSequence = function(actionName, actionArgs) {
-    if (actionName.match(/QMOTION[ ](.*)/i)) {
+    if (actionName.match(/qmotion[ ](.*)/i)) {
       return this.actionQMotionTarget(String(RegExp.$1), actionArgs);
     }
     return Alias_BattleManager_processActionSequence.call(this, actionName, actionArgs);
