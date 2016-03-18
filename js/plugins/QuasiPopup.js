@@ -1,6 +1,6 @@
 //=============================================================================
 // Quasi Popup
-// Version: 1.00
+// Version: 1.01
 // Last Update: March 17, 2016
 //=============================================================================
 // ** Terms of Use
@@ -21,12 +21,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiPopup = 1.00;
+Imported.QuasiPopup = 1.01;
 
 //=============================================================================
  /*:
  * @plugindesc Allows to create Popups on Map
- * Version: 1.00
+ * Version: 1.01
  * <QuasiPopup>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -226,6 +226,7 @@ var QuasiPopup = {};
     var settings, style;
     var popups = [];
     var transitions = [];
+    var comment = 0;
     var addTo, getSettings, getStyle, getTrans;
     for (var i = 0; i < list.length; i++) {
       var code = list[i].code;
@@ -276,22 +277,27 @@ var QuasiPopup = {};
           getTrans = true;
         }
         if (addTo) {
-          if (!popups[addTo]) {
-            popups[addTo] = "";
+          if(code === 108) comment++;
+          if (comment > 1) {
+            addTo = null;
           } else {
-            popups[addTo] += "\n";
+            if (!popups[addTo]) {
+              popups[addTo] = "";
+            } else {
+              popups[addTo] += "\n";
+            }
+            popups[addTo] += param[0];
           }
-          popups[addTo] += param[0];
         }
-      }
-      if (code === 118) {
+      } else if (code === 118) {
         var line = param[0].replace(/\s/g, "");
         if (/QuasiPopup/i.test(line)) {
           var n = Number(line.replace(/QuasiPopup/i,""));
+          comment = 0;
           addTo = n;
         }
       } else {
-        addto = null;
+        addTo = null;
       }
     };
     if (settings) {
