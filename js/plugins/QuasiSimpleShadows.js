@@ -1,6 +1,6 @@
 //=============================================================================
 // Quasi Simple Shadows
-// Version: 1.01
+// Version: 1.02
 // Last Update: March 17, 2016
 //=============================================================================
 // ** Terms of Use
@@ -21,12 +21,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSimpleShadows = 1.01;
+Imported.QuasiSimpleShadows = 1.02;
 
 //=============================================================================
  /*:
  * @plugindesc Adds Simple Shadows to characters
- * Version 1.01
+ * Version 1.02
  * <QuasiSimpleShadows>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -280,7 +280,9 @@ var QuasiSimpleShadows = {};
     if (this._shadows[id]) return;
     var shadow = new Sprite_CharacterShadow(this._character, source);
     this._shadows[id] = shadow;
-    this.parent.addChild(shadow);
+    var spritesetMap = SceneManager._scene._spriteset;
+    if (!spritesetMap._shadowLayer) return;
+    spritesetMap._shadowLayer.addChild(shadow);
   };
 
   Sprite_Character.prototype.removeShadow = function(source) {
@@ -291,7 +293,9 @@ var QuasiSimpleShadows = {};
       var id = 0;
     }
     if (!this._shadows[id]) return;
-    this.parent.removeChild(this._shadows[id]);
+    var spritesetMap = SceneManager._scene._spriteset;
+    if (!spritesetMap._shadowLayer) return;
+    spritesetMap._shadowLayer.removeChild(this._shadows[id]);
     this._shadows[id] = null;
   };
 
@@ -384,5 +388,22 @@ var QuasiSimpleShadows = {};
       }
       this.alpha = size / sLength;
     }
+  };
+
+  //-----------------------------------------------------------------------------
+  // Spriteset_Map
+  //
+  // The set of sprites on the map screen.
+
+  var Alias_Spriteset_Map_createCharacters = Spriteset_Map.prototype.createCharacters;
+  Spriteset_Map.prototype.createCharacters = function() {
+    this.createShadowLayer();
+    Alias_Spriteset_Map_createCharacters.call(this);
+  };
+
+  Spriteset_Map.prototype.createShadowLayer = function() {
+    this._shadowLayer = new Sprite();
+    this._shadowLayer.z = 0;
+    this._tilemap.addChild(this._shadowLayer);
   };
 }(QuasiSimpleShadows));
