@@ -1,0 +1,7 @@
+[
+null,
+{"id":1,"list":[{"code":108,"indent":0,"parameters":["The bottom comments set this Common Event as a "]},{"code":408,"indent":0,"parameters":["Region Event"]},{"code":408,"indent":0,"parameters":["It will activate when the player steps on the color"]},{"code":408,"indent":0,"parameters":["  #f06da9"]},{"code":408,"indent":0,"parameters":["From the Region Map"]},{"code":108,"indent":0,"parameters":["<region:#f06da9>"]},{"code":408,"indent":0,"parameters":["<cooldown:45>"]},{"code":250,"indent":0,"parameters":[{"name":"Knock","volume":90,"pitch":100,"pan":0}]},{"code":0,"indent":0,"parameters":[]}],"name":"Region Steps","switchId":1,"trigger":0},
+{"id":2,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0},
+{"id":3,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0},
+{"id":4,"list":[{"code":0,"indent":0,"parameters":[]}],"name":"","switchId":1,"trigger":0}
+]
