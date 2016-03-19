@@ -117,7 +117,7 @@ Game_Map.prototype.scrollDown = function(distance){
   } else if (this.height() >= this.screenTileY()) {
     var lastY = this._tDisplayY;
     this._tDisplayY = Math.min(this._tDisplayY + distance, this.height() - this.screenTileY());
-    this._parallaxY += this._tDisplayY - lastY;
+    this._parallaxY = this._displayY;
   }
 };
 
@@ -131,7 +131,7 @@ Game_Map.prototype.scrollLeft = function(distance){
   } else if (this.width() >= this.screenTileX()) {
     var lastX = this._tDisplayX;
     this._tDisplayX = Math.max(this._tDisplayX - distance,  0);
-    this._parallaxX += this._tDisplayX - lastX;
+    this._parallaxX = this._displayX;
   }
 };
 
@@ -145,7 +145,7 @@ Game_Map.prototype.scrollRight = function(distance){
   } else if (this.width() >= this.screenTileX()) {
     var lastX = this._tDisplayX;
     this._tDisplayX = Math.min(this._tDisplayX + distance, (this.width() - this.screenTileX()));
-    this._parallaxX += this._tDisplayX - lastX;
+    this._parallaxX = this._displayX;
   }
 };
 
@@ -159,7 +159,7 @@ Game_Map.prototype.scrollUp = function(distance){
   } else if (this.height() >= this.screenTileY()) {
     var lastY = this._tDisplayY;
     this._tDisplayY = Math.max(this._tDisplayY - distance, 0);
-    this._parallaxY += this._tDisplayY - lastY;
+    this._parallaxY = this._displayY;
   }
 };
 
@@ -171,6 +171,7 @@ Game_Map.prototype.updateScroll = function(){
     } else if (this._displayX < this._tDisplayX) {
       this._displayX = Math.min(this._displayX + xSpeed, this._tDisplayX);
     }
+    this._parallaxX = this._displayX;
   }
   if(this._displayY != this._tDisplayY){
     var ySpeed = Math.abs(this._displayY - this._tDisplayY) / this._Divider;
@@ -179,6 +180,7 @@ Game_Map.prototype.updateScroll = function(){
     } else if (this._displayY < this._tDisplayY) {
       this._displayY = Math.min(this._displayY + ySpeed, this._tDisplayY);
     }
+    this._parallaxY = this._displayY;
   }
   if(this.isScrolling()) {
     var lastX = this._tDisplayX;
