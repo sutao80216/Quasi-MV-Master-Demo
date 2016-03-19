@@ -91,6 +91,9 @@ var QuasiSimpleShadows = {};
   QuasiSimpleShadows._sources = [];
   QuasiSimpleShadows._mapId = null;
 
+  QuasiSimpleShadows._shadowLayer = new Sprite();
+  QuasiSimpleShadows._shadowLayer.z = 0;
+
   // Creates a radial gradient texture and returns
   // a sprite using that texture
   QuasiSimpleShadows.radialGradient = function(radius, color1, color2) {
@@ -117,7 +120,10 @@ var QuasiSimpleShadows = {};
   Game_Map.prototype.setup = function(mapId) {
     Alias_Game_Map_setup.call(this, mapId);
     if (mapId !== QuasiSimpleShadows._mapId) {
+      $gamePlayer.simpleShadowMembers();
       QuasiSimpleShadows._sources = [];
+      QuasiSimpleShadows._shadowLayer = new Sprite();
+      QuasiSimpleShadows._shadowLayer.z = 0;
       for (var i = 0; i < this.events().length; i++) {
         this.events()[i].getSimpleShadow();
       }
@@ -167,17 +173,31 @@ var QuasiSimpleShadows = {};
   var Alias_Game_CharacterBase_initMembers = Game_CharacterBase.prototype.initMembers;
   Game_CharacterBase.prototype.initMembers = function() {
     Alias_Game_CharacterBase_initMembers.call(this);
-    this._simpleShadowRadius = 0;
-    this._addedShadows = null;
-    this._hasShadow = true;
+    this.simpleShadowMembers();
   };
 
+  Game_CharacterBase.prototype.simpleShadowMembers = function() {
+    this._simpleShadowRadius = 0;
+    this._shadowAddQueue = [];
+    this._shadowRemoveQueue = [];
+    this._addedShadows = null;
+    this._hasShadow = true;
+  }
+
   Game_CharacterBase.prototype.addShadow = function(source) {
-    this._sprite.addShadow(source);
+    this._shadowAddQueue.push(source);
   };
 
   Game_CharacterBase.prototype.removeShadow = function(source) {
-    this._sprite.removeShadow(source);
+    this._shadowRemoveQueue.push(source);
+  };
+
+  Game_CharacterBase.prototype.requestingAddShadow = function() {
+    return this._shadowAddQueue.length > 0;
+  };
+
+  Game_CharacterBase.prototype.requestingRemoveShadow = function() {
+    return this._shadowRemoveQueue.length > 0;
   };
 
   Game_CharacterBase.prototype.castsShadows = function() {
@@ -252,8 +272,6 @@ var QuasiSimpleShadows = {};
     }
   };
 
-
-
   //-----------------------------------------------------------------------------
   // Sprite_Character
   //
@@ -265,10 +283,27 @@ var QuasiSimpleShadows = {};
     this._shadows = {};
   };
 
-  var Alias_Sprite_Character_setCharacter = Sprite_Character.prototype.setCharacter;
-  Sprite_Character.prototype.setCharacter = function(character) {
-    Alias_Sprite_Character_setCharacter.call(this, character);
-    this._character._sprite = this;
+  var Alias_Sprite_Character_update = Sprite_Character.prototype.update;
+  Sprite_Character.prototype.update = function() {
+    Alias_Sprite_Character_update.call(this);
+    if (this._character) this.updateShadows();
+  };
+
+  Sprite_Character.prototype.updateShadows = function() {
+    if (this._character.requestingAddShadow()) {
+      var addQueue = this._character._shadowAddQueue;
+      for (var i = addQueue.length - 1; i >= 0 ; i--) {
+        this.addShadow(addQueue[i]);
+        addQueue.splice(i, 1);
+      }
+    }
+    if (this._character.requestingRemoveShadow()) {
+      var removeQueue = this._character._shadowRemoveQueue;
+      for (var i = removeQueue.length - 1; i >= 0 ; i--) {
+        this.removeShadow(removeQueue[i]);
+        removeQueue.splice(i, 1);
+      }
+    }
   };
 
   Sprite_Character.prototype.addShadow = function(source) {
@@ -280,9 +315,7 @@ var QuasiSimpleShadows = {};
     if (this._shadows[id]) return;
     var shadow = new Sprite_CharacterShadow(this._character, source);
     this._shadows[id] = shadow;
-    var spritesetMap = SceneManager._scene._spriteset;
-    if (!spritesetMap._shadowLayer) return;
-    spritesetMap._shadowLayer.addChild(shadow);
+    QuasiSimpleShadows._shadowLayer.addChild(shadow);
   };
 
   Sprite_Character.prototype.removeShadow = function(source) {
@@ -293,10 +326,8 @@ var QuasiSimpleShadows = {};
       var id = 0;
     }
     if (!this._shadows[id]) return;
-    var spritesetMap = SceneManager._scene._spriteset;
-    if (!spritesetMap._shadowLayer) return;
-    spritesetMap._shadowLayer.removeChild(this._shadows[id]);
     this._shadows[id] = null;
+    QuasiSimpleShadows._shadowLayer.removeChild(this._shadows[id]);
   };
 
   //-----------------------------------------------------------------------------
@@ -380,7 +411,7 @@ var QuasiSimpleShadows = {};
         this.scale.y = this.scale.y = 0;
       }
       this.alpha = 0;
-      //this._character.removeShadow(this._source);
+      // remove here if needed
     } else {
       if (QuasiSimpleShadows.enableZoom) {
         this.scale.y = (size + 48) / sLength;
@@ -402,8 +433,6 @@ var QuasiSimpleShadows = {};
   };
 
   Spriteset_Map.prototype.createShadowLayer = function() {
-    this._shadowLayer = new Sprite();
-    this._shadowLayer.z = 0;
-    this._tilemap.addChild(this._shadowLayer);
+    this._tilemap.addChild(QuasiSimpleShadows._shadowLayer);
   };
 }(QuasiSimpleShadows));
