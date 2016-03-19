@@ -1,7 +1,7 @@
 //============================================================================
 // Quasi Movement
-// Version: 1.27
-// Last Update: March 17, 2016
+// Version: 1.28
+// Last Update: March 19, 2016
 //============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -22,12 +22,12 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Movement = 1.27;
+Imported.Quasi_Movement = 1.28;
 
 //=============================================================================
  /*:
  * @plugindesc Change the way RPG Maker MV handles movement.
- * Version: 1.26
+ * Version: 1.28
  * <QuasiMovement>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -194,7 +194,7 @@ Imported.Quasi_Movement = 1.27;
  *   http://quasixi.com/quasi-movement-documentation/
  *
  * Other Links
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - http://forums.rpgmakerweb.com/index.php?/topic/48741-quasi-movement/
  * =Special thanks to Archeia==================================================
  */
@@ -1769,8 +1769,10 @@ var QuasiMovement = (function() {
     if ($gameMap._hasCM) {
       var edge = {2: "bottom", 4: "left", 6: "right", 8: "top"};
       if (dir === 5) {
-        if (!$gameMap.collisionMapPass(this.collider(dir), "top", this.inpassableColors()) &&
-            !$gameMap.collisionMapPass(this.collider(dir), "bottom", this.inpassableColors())) {
+        if (!$gameMap.collisionMapPass(this.collider(dir), "top", this.inpassableColors()) ||
+            !$gameMap.collisionMapPass(this.collider(dir), "bottom", this.inpassableColors()) ||
+            !$gameMap.collisionMapPass(this.collider(dir), "left", this.inpassableColors()) ||
+            !$gameMap.collisionMapPass(this.collider(dir), "right", this.inpassableColors()) ) {
           return false;
         }
       } else {
@@ -1801,8 +1803,10 @@ var QuasiMovement = (function() {
     if ($gameMap._hasCM) {
       var edge = {2: "bottom", 4: "left", 6: "right", 8: "top"};
       if (dir === 5) {
-        if (!$gameMap.collisionMapPass(this.collider(), "top", this.inpassableColors()) ||
-            !$gameMap.collisionMapPass(this.collider(), "bottom", this.inpassableColors())) {
+        if (!$gameMap.collisionMapPass(this.collider(dir), "top", this.inpassableColors()) ||
+            !$gameMap.collisionMapPass(this.collider(dir), "bottom", this.inpassableColors()) ||
+            !$gameMap.collisionMapPass(this.collider(dir), "left", this.inpassableColors()) ||
+            !$gameMap.collisionMapPass(this.collider(dir), "right", this.inpassableColors()) ) {
           return false;
         }
       } else {
