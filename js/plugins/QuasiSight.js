@@ -68,7 +68,7 @@ Imported.Quasi_Sight = 1.06;
  * Got questions? Ask on my Quasi Movement thread at RPGMaker Web, link below.
  * =============================================================================
  * Other Links
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - http://forums.rpgmakerweb.com/index.php?/topic/48741-quasi-movement/
  */
 //=============================================================================
@@ -453,6 +453,15 @@ if (Imported.Quasi_Movement < 1.25) {
       this.setDirection(this._prevDirection);
     }
     this.setupSight();
+  };
+
+  var Alias_Game_Event_clearPageSettings = Game_Event.prototype.clearPageSettings;
+  Game_Event.prototype.clearPageSettings = function() {
+    Alias_Game_Event_clearPageSettings.call(this);
+    if (this._sight) {
+      SceneManager._scene.removeTempCollider(this._sight.base);
+    }
+    this._sight = null;
   };
 
   Game_Event.prototype.setupSight = function() {

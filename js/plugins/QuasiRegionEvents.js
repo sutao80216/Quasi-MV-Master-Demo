@@ -36,7 +36,7 @@ Imported.Quasi_RegionEvents = 1.0;
  *
  * Other Links
  *  - http://quasixi.com/mv/
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - http://forums.rpgmakerweb.com/index.php?/topic/48741-quasi-movement/
  */
 //=============================================================================

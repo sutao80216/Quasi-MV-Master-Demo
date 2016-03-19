@@ -39,7 +39,7 @@ Imported.QuasiPuzzleA = 1.01;
  *   http://quasixi.com/quasi-puzzle-a
  *
  * Other Links
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - http://forums.rpgmakerweb.com/index.php?/topic/58256-quasi-puzzle/
  * ============================================================================
  */

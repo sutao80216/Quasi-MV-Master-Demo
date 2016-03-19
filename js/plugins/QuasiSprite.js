@@ -34,7 +34,7 @@ Imported.Quasi_Sprite = 1.04;
  *   http://quasixi.com/quasi-sprite/
  *
  * Other Links
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - http://forums.rpgmakerweb.com/index.php?/topic/57648-quasi-sprite/
  */
 //=============================================================================

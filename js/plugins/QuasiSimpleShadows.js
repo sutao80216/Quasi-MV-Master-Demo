@@ -65,7 +65,7 @@ Imported.QuasiSimpleShadows = 1.02;
  *    http://quasixi.com/quasi-simple-shadows/
  *
  * Other Links
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - http://forums.rpgmakerweb.com/index.php?/topic/58685-quasi-simple-shadows/
  * ============================================================================
  */

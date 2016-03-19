@@ -41,7 +41,7 @@ Imported.Quasi_QEvents = 1.00;
  * =============================================================================
  * Links
  *  - http://quasixi.com/mv/
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  */
 //=============================================================================
 

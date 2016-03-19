@@ -35,7 +35,7 @@ Imported.Quasi_RegionLock = 1.04;
  *    http://quasixi.com/quasi-region-lock/
  *
  * Other Links
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - http://forums.rpgmakerweb.com/index.php?/topic/48741-quasi-movement/
  * ============================================================================
  */

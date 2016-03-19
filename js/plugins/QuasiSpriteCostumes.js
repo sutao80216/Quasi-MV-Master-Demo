@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Sprite Costumes
 // Version: 1.00
-// Last Update: March -, 2016
+// Last Update: March 18, 2016
 //=============================================================================
 // ** Terms of Use
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
@@ -16,8 +16,7 @@
 //  - - Place somewhere below QuasiSprite
 //  - Configure as needed
 //  - Open the Help menu for setup guide or visit one of the following:
-//  - - SiteLink
-//  - - RMWLink
+//  - - http://quasixi.com/quasi-sprite-costume/
 //=============================================================================
 
 var Imported = Imported || {};
@@ -30,10 +29,6 @@ Imported.QuasiSpriteCostumes = 1.00;
  * <QuasiSpriteCostumes>
  * @author Quasi       Site: http://quasixi.com
  *
- * @param =====================
- * @desc Spacer
- * @default
- *
  * @help
  * ============================================================================
  * ** Quasi Sprite Costumes v1.00
@@ -42,11 +37,10 @@ Imported.QuasiSpriteCostumes = 1.00;
  * ============================================================================
  * For a guide on how to use this plugin go to:
  *
- *   SiteLink
+ *   http://quasixi.com/quasi-sprite-costume/
  *
  * Other Links
- *  - https://github.com/quasixi/RPG-Maker-MV
- *  - RMWLink
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  * ============================================================================
  */
 //=============================================================================

@@ -69,7 +69,7 @@ Imported.QuasiPopup = 1.01;
  *   http://quasixi.com/quasi-popup/
  *
  * Other Links
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - http://forums.rpgmakerweb.com/index.php?/topic/58257-quasi-popup/
  * ============================================================================
  */

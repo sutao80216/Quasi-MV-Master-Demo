@@ -39,7 +39,7 @@ Imported.QuasiEventTurnBased = 0.9;
  *   SiteLink
  *
  * Other Links
- *  - https://github.com/quasixi/RPG-Maker-MV
+ *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - RMWLink
  * ============================================================================
  */
