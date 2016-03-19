@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Simple Shadows
-// Version: 1.02
-// Last Update: March 17, 2016
+// Version: 1.03
+// Last Update: March 19, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -21,12 +21,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSimpleShadows = 1.02;
+Imported.QuasiSimpleShadows = 1.03;
 
 //=============================================================================
  /*:
  * @plugindesc Adds Simple Shadows to characters
- * Version 1.02
+ * Version 1.03
  * <QuasiSimpleShadows>
  * @author Quasi       Site: http://quasixi.com
  *
