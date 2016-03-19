@@ -107,14 +107,6 @@ Game_Map.prototype.setDisplayPos = function(x, y) {
   }
 };
 
-Game_Map.prototype.displayX = function() {
-  return this._tDisplayX;
-};
-
-Game_Map.prototype.displayY = function() {
-  return this._tDisplayY;
-};
-
 Game_Map.prototype.scrollDown = function(distance){
   if(this.isLoopVertical()){
     this._tDisplayY += distance;
