@@ -1,6 +1,6 @@
 //============================================================================
 // Quasi Movement
-// Version: 1.28
+// Version: 1.281
 // Last Update: March 19, 2016
 //============================================================================
 // ** Terms of Use
@@ -22,12 +22,12 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Movement = 1.28;
+Imported.Quasi_Movement = 1.281;
 
 //=============================================================================
  /*:
  * @plugindesc Change the way RPG Maker MV handles movement.
- * Version: 1.28
+ * Version: 1.281
  * <QuasiMovement>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -741,8 +741,8 @@ var QuasiMovement = (function() {
   Circle_Collider.prototype = Object.create(Polygon_Collider.prototype);
   Circle_Collider.prototype.constructor = Circle_Collider;
 
-  Object.defineProperties(Polygon_Collider.prototype, {
-    radiusX: { get: function() { return this.radiusX; }, configurable: true },
+  Object.defineProperties(Circle_Collider.prototype, {
+    radiusX: { get: function() { return this._radiusX; }, configurable: true },
     radiusY: { get: function() { return this._radiusY; }, configurable: true }
   });
 
