@@ -1,6 +1,6 @@
 //=============================================================================
 // Quasi Simple Shadows
-// Version: 1.03
+// Version: 1.04
 // Last Update: March 19, 2016
 //=============================================================================
 // ** Terms of Use
@@ -21,12 +21,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSimpleShadows = 1.03;
+Imported.QuasiSimpleShadows = 1.04;
 
 //=============================================================================
  /*:
  * @plugindesc Adds Simple Shadows to characters
- * Version 1.03
+ * Version 1.04
  * <QuasiSimpleShadows>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -226,7 +226,7 @@ var QuasiSimpleShadows = {};
   };
 
   Game_CharacterBase.prototype.setupSimpleShadow = function(radius) {
-    this._simpleShadowRadius = radius;
+    this._simpleShadowRadius = radius || QuasiSimpleShadows.defaultRadius;
     QuasiSimpleShadows._sources.push(this);
   };
 
@@ -261,10 +261,13 @@ var QuasiSimpleShadows = {};
 
   Game_Event.prototype.getSimpleShadow = function() {
     var notes = this.event().note || "";
-    if (/<lightsource>/i.test(notes)) {
+    if (/<lightsource>/i.test(notes) || /<shadowsource>/i.test(notes)) {
       this.setupSimpleShadow(QuasiSimpleShadows.defaultRadius);
     } else {
       var source = /<lightsource:([0-9]*?)>/i.exec(notes);
+      if (!source) {
+        source = /<shadowsource:([0-9]*?)>/i.exec(notes);
+      }
       if (source) {
         var radius = Number(source[1]) || 1;
         this.setupSimpleShadow(radius);
