@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Simple Shadows
-// Version: 1.04
-// Last Update: March 19, 2016
+// Version: 1.041
+// Last Update: March 20, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -21,12 +21,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSimpleShadows = 1.04;
+Imported.QuasiSimpleShadows = 1.041;
 
 //=============================================================================
  /*:
  * @plugindesc Adds Simple Shadows to characters
- * Version 1.04
+ * Version 1.041
  * <QuasiSimpleShadows>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -234,7 +234,7 @@ var QuasiSimpleShadows = {};
     this._simpleShadowRadius = 0;
     var i = QuasiSimpleShadows._sources.indexOf(this);
     if (i > 0) {
-      QuasiSimpleShadows._sources[i] = null;
+      QuasiSimpleShadows._sources.splice(i, 1);
     }
   };
 
@@ -322,7 +322,6 @@ var QuasiSimpleShadows = {};
   };
 
   Sprite_Character.prototype.removeShadow = function(source) {
-    // Probably won't use, instead just set shadow alpha to 0
     if (source.eventId) {
       var id = source.eventId();
     } else {
