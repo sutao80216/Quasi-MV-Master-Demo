@@ -1,7 +1,7 @@
 //============================================================================
 // Quasi Sprite
-// Version: 1.04
-// Last Update: March 16, 2016
+// Version: 1.05
+// Last Update: March 26, 2016
 //============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -17,12 +17,12 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Sprite = 1.04;
+Imported.Quasi_Sprite = 1.05;
 
 //=============================================================================
  /*:
  * @plugindesc Lets you configure Spritesheets
- * Version 1.04
+ * Version 1.05
  * @author Quasi      Site: http://quasixi.com
  *
  * @help
@@ -54,6 +54,10 @@ var QuasiSprite = { ready: false };
         QuasiSprite.json = JSON.parse(xhr.responseText);
         QuasiSprite.ready = true;
       }
+    };
+    xhr.onerror = function() {
+      alert("Error: SpriteAnim.json could not be loaded.");
+      throw new Error("SpriteAnim.json could not be loaded.")
     };
     xhr.send();
   };
@@ -138,8 +142,13 @@ var QuasiSprite = { ready: false };
           dir = this.isDiagonal();
         }
         this._isIdle = false;
-        if (!this.hasPose("move" + dir)) return;
-        this._pose = "move" + dir;
+        if (this.isDashing()) {
+          if (!this.hasPose("dash" + dir)) return;
+          this._pose = "dash" + dir;
+        } else {
+          if (!this.hasPose("move" + dir)) return;
+          this._pose = "move" + dir;
+        }
       }
       return;
     }
