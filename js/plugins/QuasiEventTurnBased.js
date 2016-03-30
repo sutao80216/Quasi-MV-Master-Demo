@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Event Turn Based
-// Version: 0.9
-// Last Update: March 18, 2016
+// Version: 1.00
+// Last Update: March 29, 2016
 //=============================================================================
 // ** Terms of Use
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
@@ -19,12 +19,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiEventTurnBased = 0.9;
+Imported.QuasiEventTurnBased = 1.00;
 
 //=============================================================================
  /*:
  * @plugindesc Marked events will only move if player moves.
- * Version 0.9
+ * Version 1.00
  * <QuasiEventTurnBased>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -94,6 +94,7 @@ var QuasiEventTurnBased = {};
   Game_Event.prototype.initMembers = function() {
     Alias_Game_Event_initMembers.call(this);
     this._moveQueue = 0;
+    this._turnSteps = 1;
     this._isTurnBased = false;
   };
 
@@ -118,15 +119,23 @@ var QuasiEventTurnBased = {};
 
   Game_Event.prototype.setupTurnBased = function() {
     var comments = this.comments();
-    this._isTurnBased = /<turnbased>/i.test(comments);
+    var match = /<turnbased:(\d+?)>/i.exec(comments);
+    if (match) {
+      this._isTurnBased = true;
+      this._turnSteps = Number(match[1]) || 1;
+    } else {
+      this._isTurnBased = /<turnbased>/i.test(comments);
+    }
   };
 
   var Alias_Game_Event_updateRoutineMove = Game_Event.prototype.updateRoutineMove;
   Game_Event.prototype.updateRoutineMove = function() {
     if (this.isTurnBased()) {
       if (this._moveQueue > 0) {
+        if (this.checkStop(this.stopCountThreshold())) {
+          this.decreaseMoveQueue();
+        }
         Alias_Game_Event_updateRoutineMove.call(this);
-        this.decreaseMoveQueue();
       }
     } else {
       Alias_Game_Event_updateRoutineMove.call(this);
@@ -137,8 +146,10 @@ var QuasiEventTurnBased = {};
   Game_Event.prototype.updateSelfMovement = function() {
     if (this.isTurnBased()) {
       if (this._moveQueue > 0) {
+        if (this.checkStop(this.stopCountThreshold())) {
+          this.decreaseMoveQueue();
+        }
         Alias_Game_Event_updateSelfMovement.call(this);
-        this.decreaseMoveQueue();
       }
     } else {
       Alias_Game_Event_updateSelfMovement.call(this);
@@ -146,11 +157,11 @@ var QuasiEventTurnBased = {};
   };
 
   Game_Event.prototype.increaseMoveQueue = function() {
-    this._moveQueue++;
+    this._moveQueue += this._turnSteps;
   };
 
   Game_Event.prototype.decreaseMoveQueue = function() {
-    this._moveQueue = Math.min(this._moveQueue - 1, 0);
+    this._moveQueue = Math.max(this._moveQueue - 1, 0);
   };
 
   Game_Event.prototype.isTurnBased = function() {
