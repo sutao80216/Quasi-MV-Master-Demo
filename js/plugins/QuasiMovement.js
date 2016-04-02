@@ -1,7 +1,7 @@
 //============================================================================
 // Quasi Movement
-// Version: 1.282
-// Last Update: April 1, 2016
+// Version: 1.285
+// Last Update: April 2, 2016
 //============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -12,7 +12,7 @@
 //  - Once new page loads, right click and save as
 //============================================================================
 // How to install:
-//  - Save this file as "QuasiQuasiMovement.js" in your js/plugins/ folder
+//  - Save this file as "QuasiMovement.js" in your js/plugins/ folder
 //  - Add plugin through the plugin manager
 //  - - If using YEP_CoreEngine, place this somewhere below it!
 //  - Configure as needed
@@ -22,17 +22,17 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Movement = 1.282;
+Imported.Quasi_Movement = 1.285;
 
 //=============================================================================
  /*:
- * @plugindesc Change the way RPG Maker MV handles QuasiMovement.
+ * @plugindesc Change the way RPG Maker MV handles Movement.
  * Version: 1.282
  * <QuasiMovement>
  * @author Quasi       Site: http://quasixi.com
  *
  * @param Grid
- * @desc The amount of pixels you want to move per QuasiMovement.
+ * @desc The amount of pixels you want to move per Movement.
  * Script Default: 1   MV Default: 48
  * @default 1
  *
@@ -61,7 +61,7 @@ Imported.Quasi_Movement = 1.282;
  * @default false
  *
  * @param Mid Pass
- * @desc An extra collision check for the midpoint of the QuasiMovement.
+ * @desc An extra collision check for the midpoint of the Movement.
  * Set to true or false
  * @default false
  *
@@ -928,6 +928,12 @@ var QuasiMovement = {};
     Alias_Game_Interpreter_pluginCommand.call(this, command, args);
   };
 
+  var Alias_Scene_Load_reloadMapIfUpdated = Scene_Load.prototype.reloadMapIfUpdated;
+  Scene_Load.prototype.reloadMapIfUpdated = function() {
+    Alias_Scene_Load_reloadMapIfUpdated.call(this);
+    QuasiMovement._needsRefresh = true;
+  };
+
   //-----------------------------------------------------------------------------
   // Game_Map
   //
@@ -943,6 +949,19 @@ var QuasiMovement = {};
     Alias_Game_Map_setup.call(this, mapId);
     this.reloadAllBoxes();
     this.refereshVehicles();
+  };
+
+  var Alias_Game_Map_refreshIfNeeded = Game_Map.prototype.refreshIfNeeded;
+  Game_Map.prototype.refreshIfNeeded = function() {
+    Alias_Game_Map_refreshIfNeeded.call(this);
+    if (QuasiMovement._needsRefresh) {
+      delete QuasiMovement._mapColliders;
+      delete QuasiMovement._characterGrid;
+      QuasiMovement._currentCM = null;
+      QuasiMovement._currentRM = null;
+      this.reloadAllBoxes();
+      QuasiMovement._needsRefresh = false;
+    }
   };
 
   Game_Map.prototype.flagAt = function(x, y) {
