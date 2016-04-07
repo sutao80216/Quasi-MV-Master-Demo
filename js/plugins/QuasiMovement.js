@@ -1,7 +1,7 @@
 //============================================================================
 // Quasi Movement
-// Version: 1.285
-// Last Update: April 2, 2016
+// Version: 1.29
+// Last Update: April 6, 2016
 //============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -22,12 +22,12 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Movement = 1.285;
+Imported.Quasi_Movement = 1.29;
 
 //=============================================================================
  /*:
  * @plugindesc Change the way RPG Maker MV handles Movement.
- * Version: 1.282
+ * Version: 1.29
  * <QuasiMovement>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -942,8 +942,8 @@ var QuasiMovement = {};
 
   var Alias_Game_Map_setup = Game_Map.prototype.setup;
   Game_Map.prototype.setup = function(mapId) {
-    delete QuasiMovement._mapColliders;
-    delete QuasiMovement._characterGrid;
+    QuasiMovement._mapColliders = null;
+    QuasiMovement._characterGrid = null;
     QuasiMovement._currentCM = null;
     QuasiMovement._currentRM = null;
     Alias_Game_Map_setup.call(this, mapId);
@@ -955,10 +955,7 @@ var QuasiMovement = {};
   Game_Map.prototype.refreshIfNeeded = function() {
     Alias_Game_Map_refreshIfNeeded.call(this);
     if (QuasiMovement._needsRefresh) {
-      delete QuasiMovement._mapColliders;
-      delete QuasiMovement._characterGrid;
-      QuasiMovement._currentCM = null;
-      QuasiMovement._currentRM = null;
+      this.removeAllBoxes();
       this.reloadAllBoxes();
       QuasiMovement._needsRefresh = false;
     }
@@ -988,8 +985,8 @@ var QuasiMovement = {};
   };
 
   Game_Map.prototype.reloadAllBoxes = function() {
-    delete QuasiMovement._mapColliders;
-    delete QuasiMovement._characterGrid;
+    QuasiMovement._mapColliders = null;
+    QuasiMovement._characterGrid = null;
     this.reloadTileMap();
     var events   = this.events();
     var vehicles = this._vehicles;
@@ -1007,8 +1004,10 @@ var QuasiMovement = {};
   };
 
   Game_Map.prototype.removeAllBoxes = function() {
-    delete QuasiMovement._mapColliders;
-    delete QuasiMovement._characterGrid;
+    QuasiMovement._mapColliders = null;
+    QuasiMovement._characterGrid = null;
+    QuasiMovement._currentCM = null;
+    QuasiMovement._currentRM = null;
     this.disposeCollisionmap();
   };
 
@@ -1224,14 +1223,14 @@ var QuasiMovement = {};
     if (rm) {
       QuasiMovement._regionmap = ImageManager.loadBitmap(QuasiMovement.rmFolder, rm);
     } else {
-      QuasiMovement._regionmap = new Bitmap(this.width() * QuasiMovement.tileSize, this.height() * QuasiMovement.tileSize);
+      QuasiMovement._regionmap = new Bitmap(0,0);
     }
     QuasiMovement._currentRM = rm;
   };
 
   Game_Map.prototype.disposeCollisionmap = function() {
-    if (QuasiMovement._collisionmap) delete QuasiMovement._collisionmap;
-    if (QuasiMovement._regionmap)    delete QuasiMovement._regionmap;
+    if (QuasiMovement._collisionmap) QuasiMovement._collisionmap = null;
+    if (QuasiMovement._regionmap)    QuasiMovement._regionmap = null;
   };
 
   Game_Map.prototype.drawTileBoxes = function() {
@@ -2224,7 +2223,7 @@ var QuasiMovement = {};
   Game_CharacterBase.prototype.smartMoveDir8 = function(dir) {
     var x1 = this.px;
     var y1 = this.py;
-    var dist = 0;
+    var dist = QuasiMovement.offGrid ? QuasiMovement.grid : this.moveTiles();
     var horz = [4, 6].contains(dir) ? true : false;
     var steps = horz ? this.collider().height : this.collider().width;
     steps /= 2;
@@ -2234,12 +2233,12 @@ var QuasiMovement = {};
       var x2 = x1;
       var y2 = y1;
       while (j < steps) {
-        j += this.moveTiles();
+        j += dist;
         if (horz) {
-          x2 = $gameMap.roundPXWithDirection(x1, dir, this.moveTiles());
+          x2 = $gameMap.roundPXWithDirection(x1, dir, dist);
           y2 = y1 + j * sign;
         } else {
-          y2 = $gameMap.roundPYWithDirection(y1, dir, this.moveTiles());
+          y2 = $gameMap.roundPYWithDirection(y1, dir, dist);
           x2 = x1 + j * sign;
         }
         var pass = this.canPixelPass(x2, y2, 5);
@@ -2249,8 +2248,8 @@ var QuasiMovement = {};
     }
     if (pass) {
       var collider = this.collider();
-      var x3 = $gameMap.roundPXWithDirection(x1, dir, this.moveTiles());
-      var y3 = $gameMap.roundPYWithDirection(y1, dir, this.moveTiles());
+      var x3 = $gameMap.roundPXWithDirection(x1, dir, dist);
+      var y3 = $gameMap.roundPYWithDirection(y1, dir, dist);
       collider.moveto(x3, y3);
       var self = this;
       var events = $gameMap.getCharactersAt(collider, function(e) {
@@ -2272,7 +2271,6 @@ var QuasiMovement = {};
       this.increaseSteps();
       this._followers.addMove(this._px, this._py, this.realMoveSpeed(), dir);
     }
-    pass;
   };
 
   Game_CharacterBase.prototype.moveDiagonally = function(horz, vert) {
@@ -2412,7 +2410,7 @@ var QuasiMovement = {};
   };
 
   Game_CharacterBase.prototype.reloadBoxes = function() {
-    delete this._collider;
+    this._collider = null;
     this.collider();
     $gameMap.updateCharacterGrid(this, []);
     this._gridPosition = this.collider().gridEdge();
@@ -3724,8 +3722,10 @@ var QuasiMovement = {};
   };
 
   Sprite_Collider.prototype.setupCollider = function(collider) {
+    this._collider = null;
     this._collider = collider;
     if (this._colliderSprite) this.removeChild(this._colliderSprite);
+    this._colliderSprite = null;
     this._colliderSprite = new PIXI.Graphics();
     this.drawCollider();
     this.addChild(this._colliderSprite);
@@ -3919,9 +3919,11 @@ var QuasiMovement = {};
 
   Spriteset_Map.prototype.updateTileBoxes = function() {
     if (this._collisionmap.bitmap !== QuasiMovement._collisionmap) {
+      this._collisionmap.bitmap = null;
       this._collisionmap.bitmap = QuasiMovement._collisionmap;
     }
     if (this._regionmap.bitmap !== QuasiMovement._regionmap) {
+      this._regionmap.bitmap = null;
       this._regionmap.bitmap = QuasiMovement._regionmap;
     }
     this._collisionmap.visible = QuasiMovement.showBoxes;
