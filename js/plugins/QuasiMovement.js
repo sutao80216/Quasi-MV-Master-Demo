@@ -1,7 +1,7 @@
 //============================================================================
 // Quasi Movement
-// Version: 1.29
-// Last Update: April 6, 2016
+// Version: 1.291
+// Last Update: April 10, 2016
 //============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -22,12 +22,12 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Movement = 1.29;
+Imported.Quasi_Movement = 1.291;
 
 //=============================================================================
  /*:
  * @plugindesc Change the way RPG Maker MV handles Movement.
- * Version: 1.29
+ * Version: 1.291
  * <QuasiMovement>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -2350,7 +2350,7 @@ var QuasiMovement = {};
       this._moveCount++;
       this.increaseSteps();
       if (this.constructor === Game_Player) {
-        this._followers.addMove(this._px, this._py, this.realMoveSpeed(), dir);
+        this._followers.addMove(this._px, this._py, this.realMoveSpeed(), this._direction);
       }
       this._diagonal = this.direction8(horz, vert);
     } else {
