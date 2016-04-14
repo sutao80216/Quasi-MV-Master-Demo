@@ -1,7 +1,7 @@
 //============================================================================
 // Quasi Movement
-// Version: 1.291
-// Last Update: April 10, 2016
+// Version: 1.292
+// Last Update: April 13, 2016
 //============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -22,12 +22,12 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Movement = 1.291;
+Imported.Quasi_Movement = 1.292;
 
 //=============================================================================
  /*:
  * @plugindesc Change the way RPG Maker MV handles Movement.
- * Version: 1.291
+ * Version: 1.292
  * <QuasiMovement>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -2460,9 +2460,9 @@ var QuasiMovement = {};
         multibox  = /<bbox>([\s\S]*)<\/bbox>/.exec(note);
         var oldmulti = true;
       }
-      var singlebox = /<collider[=|:]([0-9a-zA-Z,\s]*)>/.exec(note);
+      var singlebox = /<collider[=|:]([0-9a-zA-Z,-\s]*)>/.exec(note);
       if (!singlebox) {
-        singlebox = /<bbox[=|:]([0-9a-zA-Z,\s]*)>/.exec(note);
+        singlebox = /<bbox[=|:]([0-9a-zA-Z,-\s]*)>/.exec(note);
         var oldsingle = true;
       }
     }
