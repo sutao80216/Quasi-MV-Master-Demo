@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Popup
-// Version: 1.01
-// Last Update: March 17, 2016
+// Version: 1.02
+// Last Update: March 30, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -21,12 +21,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiPopup = 1.01;
+Imported.QuasiPopup = 1.02;
 
 //=============================================================================
  /*:
  * @plugindesc Allows to create Popups on Map
- * Version: 1.01
+ * Version: 1.02
  * <QuasiPopup>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -86,7 +86,7 @@ function Sprite_QuasiPopup() {
 // Quasi Popup
 
 var QuasiPopup = {};
-(function(QuasiPopup) {
+(function() {
   QuasiPopup.processParameters = function() {
     var params = $plugins.filter(function(p) { return p.description.contains('<QuasiPopup>'); })[0].parameters;
     var fontName = params["Default Font"] || "GameFont";
@@ -123,8 +123,8 @@ var QuasiPopup = {};
       settings.transitions = [];
     }
     popup.setup(string, style, settings);
-    var ox = setings ? settings.offsetX || 0 : 0;
-    var oy = setings ? settings.offsetY || 0 : 0;
+    var ox = settings ? settings.offsetX || 0 : 0;
+    var oy = settings ? settings.offsetY || 0 : 0;
     popup.realX = popup.x = x - ox;
     popup.realY = popup.y = y - oy;
     popup.notification = true;
@@ -632,4 +632,4 @@ var QuasiPopup = {};
   Sprite_QuasiPopup.prototype.isPlaying = function() {
     return this.duration < this.settings.duration;
   };
-}(QuasiPopup));
+}());
