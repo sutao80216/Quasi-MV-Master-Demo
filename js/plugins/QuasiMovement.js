@@ -1,7 +1,7 @@
 //============================================================================
 // Quasi Movement
-// Version: 1.292
-// Last Update: April 13, 2016
+// Version: 1.293
+// Last Update: April 16, 2016
 //============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -22,12 +22,12 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Movement = 1.292;
+Imported.Quasi_Movement = 1.293;
 
 //=============================================================================
  /*:
  * @plugindesc Change the way RPG Maker MV handles Movement.
- * Version: 1.292
+ * Version: 1.293
  * <QuasiMovement>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -896,6 +896,7 @@ var QuasiMovement = {};
         var end   = Number(args[2]) || start;
         var wait  = start + Math.randomInt(end - start + 1);
         this.wait(wait);
+        return;
       }
       if (args[0].toLowerCase() === "setpassability") {
         if (Number(args[1]) === 0) {
@@ -917,12 +918,24 @@ var QuasiMovement = {};
         } else {
           $gameMap.event(id).changeCollider(type, width, height, ox, oy);
         }
+        return;
       }
       if (args[0].toLowerCase() === "collisionmap") {
         $gameMap.loadCollisionmap(args[1]);
+        return;
       }
       if (args[0].toLowerCase() === "regionmap") {
         $gameMap.loadCollisionmap(args[1]);
+        return;
+      }
+      if (args[0].toLowerCase() === "transfer") {
+        var mapId = Number(args[1]);
+        var x = Number(args[2]) / QuasiMovement.tileSize;
+        var y = Number(args[3]) / QuasiMovement.tileSize;
+        var retain = Number(args[4]) || 0;
+        var fade = Number(args[5]) || 0;
+        $gamePlayer.reserveTransfer(mapId, x, y, retain, fade);
+        return;
       }
     }
     Alias_Game_Interpreter_pluginCommand.call(this, command, args);
@@ -2310,6 +2323,9 @@ var QuasiMovement = {};
   };
 
   Game_CharacterBase.prototype.fixedMove = function(dir, dist) {
+    if (dir === 5) {
+      dir = this._direction;
+    }
     if ([1, 3, 7, 9].contains(dir)) {
       var diag = {
         1: [4, 2],
@@ -2669,7 +2685,6 @@ var QuasiMovement = {};
   Game_Character.prototype.subMmove = function(settings) {
     settings = QuasiMovement.stringToAry(settings);
     var dir  = settings[0];
-    dir = dir === 5 ? this._direction : dir;
     var amt  = settings[1];
     var mult = settings[2] || 1;
     var tot  = amt * mult;
@@ -2690,7 +2705,6 @@ var QuasiMovement = {};
   Game_Character.prototype.subQmove = function(settings) {
     settings  = QuasiMovement.stringToAry(settings);
     var dir   = settings[0];
-    dir = dir === 5 ? this._direction : dir;
     var amt   = settings[1];
     var multi = settings[2] || 1;
     var tot   = amt * multi;
@@ -2711,7 +2725,7 @@ var QuasiMovement = {};
       var cmd = {};
       cmd.code = "fixedMove";
       cmd.parameters = [dir, tot - moved];
-      if (dir ===0) {
+      if (dir === 0) {
         cmd.code = "fixedMoveBackward";
         cmd.parameters = [tot - moved];
       }
