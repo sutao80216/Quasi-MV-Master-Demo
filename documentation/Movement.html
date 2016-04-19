@@ -1,0 +1,410 @@
+<strong>About:</strong>
+Documentation for Quasi Movement plugin for RPG Maker MV.
+<!--more-->
+<h1>Table of Contents:</h1>
+<b>Movement</b>
+<ul>
+  <li><a href="http://quasixi.com/quasi-movement-documentation/1/#colliders">Colliders</a></li>
+  <li><a href="http://quasixi.com/quasi-movement-documentation/2/#boxes">Tile Boxes and Region Boxes</a></li>
+  <li><a href="http://quasixi.com/quasi-movement-documentation/2/#cm">Collision Maps and Region Maps</a></li>
+  <li><a href="http://quasixi.com/quasi-movement-documentation/3/#pl">Passability Levels</a></li>
+  <li><a href="http://quasixi.com/quasi-movement-documentation/4/#move">Moving Characters</a></li>
+  <li><a href="http://quasixi.com/quasi-movement-documentation/5/#adv">Advanced features</a></li>
+  <li><a href="http://quasixi.com/quasi-movement-documentation/6/#addon">Addons</a></li>
+</ul>
+<hr>
+
+<center><h2>Based off Verison 1.25</h2></center>
+<h1 id="colliders">Colliders</h1>
+<div style="margin-left: 40px;">
+  <p>There are two types of colliders; Box Colliders and Circle Colliders. You can
+  config the colliders width, height and offsets. For Circle Colliders you won't
+  set a radius, instead you configure it if you are making a box and circle will
+  be created inside the box.</p>
+  <center><b>Collider Examples:</b><br>
+    <a href="/images/Movement/boxtypes.png">
+      <img src="/images/Movement/boxtypes.png">
+    </a>
+  </center>
+
+  <h2>Setting up Colliders</h2>
+  <p>Colliders are created inside the Players notebox or as a comment inside an Events page. Events
+  colliders depends it's page, so you may need to make the collider on all pages.</p>
+  <b>Collider (Note Tag)</b><br>
+
+    [code]&lt;collider:type,width,height,ox,oy&gt;[/code]
+<ol>
+  <b>Type:</b> Set to box or circle.<br>
+  <b>Width:</b> Set to the width of the box / X Diameter of the circle.<br>
+  <b>Height:</b> Set to the height of the box / Y Diameter of the circle.<br>
+  <b>OX:</b> Set to the x offset of the collider relative to it's px value.<br>
+  <b>OY:</b> Set to the y offset of the collider relative to it's py value.<br>
+</ol>
+  <center><b>Collider Definitions:</b><br>
+    <a href="/images/Movement/box.png">
+      <img src="/images/Movement/box.png">
+    </a>
+  </center>
+  <br>
+  You can also set up a different collider depending on the direction the character is facing.<br>
+
+[code]&lt;collider&gt;<br>
+5: type, width, height, ox, oy<br>
+X: type, width, height, ox, oy<br>
+&lt;/collider&gt;[/code]
+
+  Where 5 is the default box if a box isn't set for a direction.<br>
+  And X is the box for that direction.<br>
+  Direction can be 2, 4, 6 or 8.<br><br>
+
+  <h2>Changing Colliders</h2><br>
+You can change colliders with event by using a script call or plugin command.<br>
+<b>Script Call</b>
+[code]$gamePlayer.changeCollider(type, width, height, ox, oy);[/code]
+
+  For Events:
+
+[code]$gameMap.event(eventId).changeCollider(type, width, height, ox, oy);[/code]
+<ol>
+  <b>eventId:</b> The ID of the event.<br>
+  <b>type:</b> "box" or "circle" **with the Quotes!!**<br>
+  <b>width:</b> The width of the collider, no quotes<br>
+  <b>height:</b> The height of the collider, no quotes<br>
+  <b>ox:</b> The X Offset of the collider, no quotes<br>
+  <b>oy:</b> The Y Offset of the collider, no quotes<br>
+</ol>
+<b>Plugin Call</b>
+[code]quasi collider id type width height ox oy[/code]
+<ol>
+  <b>id:</b> Set to 0 for the player or set to the ID of the event.<br>
+  <b>type:</b> box or circle, no quotes<br>
+  <b>width:</b> The width of the collider, no quotes<br>
+  <b>height:</b> The height of the collider, no quotes<br>
+  <b>ox:</b> The X Offset of the collider, no quotes<br>
+  <b>oy:</b> The Y Offset of the collider, no quotes<br>
+</ol>
+</div>
+
+<h2>Examples</h2>
+<div style="margin-left: 40px;">
+<b>Example 1</b>
+<em>Lets give the player a circle collider that's 48x48</em>
+[spoiler]
+<a href="http://quasixi.com/qwp-content/uploads/2016/02/2016-02-08-17_07_12.png">
+  <img  src="http://quasixi.com/qwp-content/uploads/2016/02/2016-02-08-17_07_12.png">
+</a>
+[/spoiler]
+
+<b>Example 2</b>
+<em>Lets give an Event a box collider that's 48x48</em>
+[spoiler]
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/2016-02-08-17_11_37.png" rel="attachment wp-att-249"><img src="http://quasixi.com/qwp-content/uploads/2016/01/2016-02-08-17_11_37.png" alt="movement1" width="1048" height="748" class="alignnone size-full wp-image-249" /></a>
+[/spoiler]
+
+<b>Example 3</b>
+<em>Now lets change a players collider using an Event</em>
+[spoiler]
+<a href<a href="http://quasixi.com/qwp-content/uploads/2016/01/2016-02-08-17_16_53.png" rel="attachment wp-att-250"><img src="http://quasixi.com/qwp-content/uploads/2016/01/2016-02-08-17_16_53.png" alt="movement2" width="1048" height="748" class="alignnone size-full wp-image-250" />
+[/spoiler]
+</div>
+<!--nextpage-->
+
+<h2 id="boxes">Tile Boxes and Region Boxes</h2>
+<div style="margin-left: 40px;">
+  <p>Tile boxes are automatically created. Their sizes will also adjust depending on your <b>Tile Size</b> settings. Tile boxes merge will all the tile layers. So if the bottom layer is impassable but the top layer is passable, the whole tile will be impassable. To get around this we can use Region Boxes. Region Boxes take priority over Tile Boxes, therefore we can create a passable region box and place it over an impassable tile to make it passable.</p>
+<p>In order to be able to use Region Boxes, you will need to enable the <b>Use Region Boxes</b> setting. Once it's enabled you will need to create a json file called "RegionBoxes.json" inside the <b>JSON Folder</b> you set in the settings.</p>
+  <b>JSON template (JSON)</b>
+[code]{
+&quot;REGION ID 1&quot;: [
+    {&quot;width&quot;: w, &quot;height&quot;: h, &quot;ox&quot;: ox value, &quot;oy&quot;: oy value, &quot;tag&quot;: &quot;value&quot;}
+       ],
+&quot;REGION ID 2&quot;: [
+    {&quot;width&quot;: w, &quot;height&quot;: h, &quot;ox&quot;: value, &quot;oy&quot;: value},
+    {&quot;width&quot;: w, &quot;height&quot;: h, &quot;ox&quot;: value, &quot;oy&quot;: value}
+       ]
+}[/code]
+<ol>
+  <b>Region ID:</b> The region that will use this box.<br>
+  Be careful with the commas ( , ) place them after } or ] only if it's not the last one in the list!<br>
+  The tag field will act like notetags for regions. This will allow me to treat regions differently
+  depending on the tag if needed.
+</ol>
+  <b>Few tags</b>
+[code]&lt;counter&gt;
+&lt;bush&gt;
+&lt;ladder&gt;
+&lt;damage&gt;[/code]
+<ol>
+  <em>* You can use more then one tag, just keep it inside the &quot;&quot; quotes!</em><br></ol>
+  <b>Ex:</b>  &quot;&lt;bush&gt;&lt;damage&gt;&quot;
+  <br><br>
+  <a href="https://gist.github.com/quasixi/ff149320fd6885191d87">Example JSON File.<br>
+  https://gist.github.com/quasixi/ff149320fd6885191d87</a>
+</div>
+
+<h2 id="cm">Collision Maps and Region Maps</h2>
+<div style="margin-left: 40px;">
+<p>If you don't want your tile collisions to be all boxes and have unique shapes, you can use Collision Maps. Collision Maps will overlay Tile Boxes, so if you don't want conflicting Tile Boxes, make the whole map passable by either editing the tiles passability in the Tileset Editor, or use a passable Region. Region Maps are an extra tool for developers and for Region Maps may be used in addons.</p>
+  <center>
+    <blockquote class="twitter-video" lang="en"><p lang="en" dir="ltr">Yay Circle collisions complete! <a href="https://twitter.com/hashtag/RPGMakerMV?src=hash">#RPGMakerMV</a> <a href="https://t.co/KxX4wbAnAO">pic.twitter.com/KxX4wbAnAO</a></p>&mdash; Quasi (@QuasiXi) <a href="https://twitter.com/QuasiXi/status/662136817395724288">November 5, 2015</a></blockquote>
+    <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </center>
+  <h3>Creating Collision Maps / Region Maps</h3>
+  <p>You can create the maps in any image editor you want. For Collisions Maps use the color you set for <b>Collisions</b> in the settings to indicate collisions. You can use any color you want in Region Maps. Place these images in the folder you set in the settings for <b>Collision Map Folder</b> and <b>Region Map Folder</b></p>
+  <b>Enabling Collision Maps (Notetag)</b>
+[code]&lt;cm=filename&gt;[/code]
+  <b>Enabling Region Maps (Notetag)</b>
+[code]&lt;rm=filename&gt;[/code]
+<ol><b>filename:</b> Set this to the name of the image you want to load.<br>
+  <em>* These notes should be placed inside the Maps Notes found in the Map Properties.</em><br><br></ol>
+
+  <h3>Changing Collision Maps / Region Maps</h3>
+  <b>Change Collision Maps (Script Call)</b>
+[code]$gameMap.loadCollisionmap("filename");[/code]
+  <b>Change Region Maps (Script Call)</b>
+[code]$gameMap.loadRegionmap("filename");[/code]
+<ol><b>filename:</b> Set this to the name of the image you want to load.<br>
+  <em>* filename should be wrapped with quotes.
+  * This will replace the current one.
+  * If filename is left empty, collision map will be disabled.</em></ol>
+</div>
+
+<h2 id="tcm">Tile Collision Maps</h2>
+<div style="margin-left: 40px;">
+ - To Do
+</div>
+
+<h2>Examples</h2>
+<div style="margin-left: 40px;">
+<b>Example 1</b>
+<em>Set up a map with a collision map with a file name "!CollisionMap" and a region map named "!RegionMap"</em>
+[spoiler]
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/2016-02-12-13_19_19.png" rel="attachment wp-att-258"><img src="http://quasixi.com/qwp-content/uploads/2016/01/2016-02-12-13_19_19.png" alt="movement3" width="852" height="643" class="alignnone size-full wp-image-258" /></a>
+[/spoiler]
+
+<b>Example 2</b>
+<em>Lets change the collision map with a script call.</em>
+[spoiler]
+First lets have an event that changes the collision map to a collision map named "!CollisionMap2"
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/movement4.png" rel="attachment wp-att-259"><img src="http://quasixi.com/qwp-content/uploads/2016/01/movement4.png" alt="movement4" width="1048" height="748" class="alignnone size-full wp-image-259" /></a>
+
+Now lets change the event so it removes the collision map by not setting a filename.
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/movement5.png" rel="attachment wp-att-260"><img src="http://quasixi.com/qwp-content/uploads/2016/01/movement5.png" alt="movement5" width="1048" height="748" class="alignnone size-full wp-image-260" /></a>
+[/spoiler]
+
+<b>Example 3</b>
+<em>Lets set up a tile collision map</em>
+[spoiler]
+First we need a tile collision image inside the tilesets folder. This image needs to be 16x16. So if our tile size is 48x48 then our image needs to be 768x768.
+Here's my test image I used:
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/Outside_BCM.png" rel="attachment wp-att-261"><img src="http://quasixi.com/qwp-content/uploads/2016/01/Outside_BCM.png" alt="Outside_B#CM" width="768" height="768" class="alignnone size-full wp-image-261" /></a>
+<em>I was a bit lazy to do all the tiles, so I only did a few of them for testing.</em>
+This is a collision map for the Outside_B tiles.
+
+Now lets open the Database, open the Tilesets tab, and go to the outside tileset and lets add the collision map. Since this is for a B tile we will use the <b>&lt;cmb:filename&gt;</b> tag. Your result should look like:
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/movement6.png" rel="attachment wp-att-262"><img src="http://quasixi.com/qwp-content/uploads/2016/01/movement6.png" alt="movement6" width="1180" height="748" class="alignnone size-full wp-image-262" /></a>
+
+And that's all! Now go draw some tiles from those b tile location to test!
+[/spoiler]
+</div>
+
+<!--nextpage-->
+
+<h2 id="pl">Passability Levels</h2>
+<div style="margin-left: 40px;">
+  <p>Passability levels are a new feature which sets wither a character can walk over water or deep water tiles.</p>
+  <h3>Levels:</h3>
+  <ul>
+    <li><b>0 -</b> Default, Can only move on passable tiles</li>
+    <li><b>1 -</b> Boat, Can only move on water 1 tiles</li>
+    <li><b>2 -</b> Ship, Can only move on water 1 and water 2 tiles</li>
+    <li><b>3 -</b> NEW, Can move on passable tiles and water 1 tiles</li>
+    <li><b>4 -</b> NEW, Can move on passable tiles, water 1 and water 2 tiles</li>
+  </ul>
+
+  <b>Set default Passability Level for Event(Comment)</b><br>
+[code]&lt;pl:LEVEL&gt;[/code]
+ <ol><b>LEVEL:</b> Change LEVEL to the passability level you want to set it to.<br>
+  <em>* Resets on page change.</em><br><br></ol>
+ <b>Changing a Characters Passability Level (Script Call)</b><br>
+[code]$gamePlayer.setPassability(LEVEL);[/code]
+ For Events:
+[code]$gameMap.event(ID).setPassability(LEVEL);[/code]
+<ol><b>ID:</b> The ID of the event.<br>
+ <b>X:</b> Change LEVEL to the passability level you want to set it to.<br><br></ol>
+
+ <b>Changing a Characters Passability Level (Plugin Command)</b><br>
+[code]quasi setPassability ID LEVEL[/code]
+ <ol><b>ID:</b> The ID of the event or set to 0 for the player.<br>
+ <b>LEVEL:</b> Change LEVEL to the passability level you want to set it to.<br><br></ol>
+
+ <b>Check a Characters Passability Level (Script Call)</b><br>
+[code]$gamePlayer.passabilityLevel();[/code]
+ For Events:
+[code]$gameMap.event(ID).passabilityLevel();[/code]
+ <ol><b>ID:</b> The ID of the event.<br></o;>
+ These calls will return the value of their passability level.
+</div>
+
+<h2>Examples</h2>
+<div style="margin-left: 40px;">
+<b>Example 1</b>
+<em>Lets test out all the different passability levels.</em>
+[spoiler]
+First lets create a map with some water and deep water tiles. Should look something like:
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/movementPL1.png" rel="attachment wp-att-275"><img src="http://quasixi.com/qwp-content/uploads/2016/01/movementPL1.png" alt="movementPL1" width="439" height="366" class="alignnone size-full wp-image-275" /></a>
+
+Now lets create 4 events on the left side of the water and give them passability levels from 1-4.
+This is how my 1st event looks:
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/movementPL2.png" rel="attachment wp-att-276"><img src="http://quasixi.com/qwp-content/uploads/2016/01/movementPL2.png" alt="movementPL2" width="1047" height="746" class="alignnone size-full wp-image-276" /></a>
+I put a move route to have it keep moving right, so we can have it try to walk over the water tiles, and put the frequency at 5 for quicker testing.
+
+Our map should now look something like:
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/movementPL3.png" rel="attachment wp-att-277"><img src="http://quasixi.com/qwp-content/uploads/2016/01/movementPL3.png" alt="movementPL3" width="454" height="361" class="alignnone size-full wp-image-277" /></a>
+
+Add your player starting location to that map, and hit play test! You should only see 2 of the 4 events move. The ones with a passability level of 1 and 2 should be stuck since they can only move on water tiles!
+
+Once all the events are done moving, you should see something like:
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/movementPL4.png" rel="attachment wp-att-278"><img src="http://quasixi.com/qwp-content/uploads/2016/01/movementPL4.png" alt="movementPL4" width="960" height="540" class="alignnone size-full wp-image-278" /></a>
+
+Now lets move the events position so they start on the water.
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/movementPL5.png" rel="attachment wp-att-279"><img src="http://quasixi.com/qwp-content/uploads/2016/01/movementPL5.png" alt="movementPL5" width="437" height="357" class="alignnone size-full wp-image-279" /></a>
+
+Now play test this and all 4 should now move! Once they stop moving you should see something like:
+<a href="http://quasixi.com/qwp-content/uploads/2016/01/movementPL6.png" rel="attachment wp-att-280"><img src="http://quasixi.com/qwp-content/uploads/2016/01/movementPL6.png" alt="movementPL6" width="960" height="540" class="alignnone size-full wp-image-280" /></a>
+
+And that's all there is to it! This should help you understand what passability levels are and do.
+[/spoiler]
+
+</div>
+
+<!--nextpage-->
+
+<h2 id="move">Moving Characters</h2>
+<div style="margin-left: 40px;">
+  <p>Moving characters can be pretty tidious when using pixel movement. So there are a few new functions to make it easier.</p>
+  <center>
+    <img src="/images/Movement/qmove.png"><br>
+    * Example of an Event moving 3 tiles left then 3 tiles right.
+  </center>
+  <h3>Script calls for Move Routes</h3>
+  The following should be placed inside the "script..." command in Move Routes.<br>
+
+  <b>QMove (Quasi Move)</b>
+  Moves the character X amount of distance, ignores <b>Off Grid</b> setting
+[code]qmove(direction, amount, multiplicity)[/code]
+  <ol><b>direction:</b> Which direction the movement should be.<br>
+  <b>amount:</b> How many times should the player move.<br>
+  <b>multiplicity:</b> Multiplies amount by this value for easier calculations.<br><br></ol>
+
+  <b>MMove (Multiple Move)</b><br>
+  Moves the character X amount of distance, stays on Grid.
+[code]mmove(direction, amount, multiplicity)[/code]
+  <ol><b>direction:</b> Which direction the movement should be.<br>
+  <b>amount:</b> How many times should the player move.<br>
+  <b>multiplicity:</b> Multiplies amount for easier calculations.<br>
+  <em>* Directions are 2 (down), 4(left), 6(right), 8(up), 5(forward), 0(backward)</em></ol>
+<br><br>
+
+  <b>Arcing</b>
+[code]arc(pivotX, pivotY, deltaRadian, counterClockwise, frames)[/code]
+  or
+[code]arcTo(charaId, deltaRadian, counterClockwise, frames)[/code]
+  <ol><b>pivotX:</b> The pixel X location to rotate around.<br>
+  <b>pivotY:</b> The pixel Y location to rotate around.<br>
+  <b>charaId:</b> The character Id to rotate around, if Id is 0 it will rotate around the player.<br>
+  <b>deltaRadian:</b> The distance to travel in the arc in radians ( Default 2 PI ), leave blank, null or false to use default.<br>
+  <b>counterClockwise:</b> Set to true or false. Default: false<br>
+  <b>frames:</b> How long should it take to complete the arc.<br><br></ol>
+
+  <h3>Initializing Events OX and OY</h3>
+  You can fine tune your events starting location, so they will stand at the pixels you want them to.<br>
+  <b>Setting initial Offsets (Comments)</b>
+[code]&lt;ox=X&gt;[/code]
+ <ol><b>X:</b> Change X to the inital X offset.<br></ol>
+[code]&lt;oy=Y&gt;[/code]
+ <ol><b>Y:</b> Change Y to the inital Y offset.<br></ol>
+  <em>* Offsets resets on page change.</em><br><br>
+
+  <h3>Jumping</h3>
+  There are two new functions for jumping. A Pixel based jump and a jump forward.<br><br>
+  <b>Pixel Jump (Script Call)</b>
+[code]$gamePlayer.pixelJump(distanceX, distanceY)[/code]
+  For Events:
+[code]$gameMap.event(ID).pixelJump(distanceX, distanceY)[/code]
+  <ol><b>ID:</b> The ID of the event.<br><br></ol>
+  <b>Jump Foward (Script Call)</b>
+[code]$gamePlayer.jumpForward(direction)[/code]
+  For Events:
+[code]$gameMap.event(ID).jumpForward(direction)[/code]
+  <ol><b>ID:</b> The ID of the event.<br>
+  <b>direction (Optional):</b> Direction can be 2, 4, 6 or 8.</ol>
+</div>
+
+<h2>Examples</h2>
+<div style="margin-left: 40px;">
+<b>Example 1</b>
+<em></em>
+[spoiler]
+
+[/spoiler]
+
+</div>
+
+<!--nextpage-->
+
+<h2 id="adv">Advanced features</h2>
+<p>Advanced features are only for users that are comfortable with scripting. All these features may require some knowledge for Javascript to use to it's full potential.</p>
+<center>
+  <img src="/images/Movement/console.png"><br>
+  * Example of using Advanced script calls with console.
+</center>
+<div style="margin-left: 40px;">
+  <b>Get tile flags</b>
+[code]$gameMap.flagsAt(x, y);[/code]
+  <ol>x and y default to players x and y</ol><br>
+  Works best when grid is equal to tile size. The results are logged in the console.<br><br>
+
+  <b>Get color from region map</b>
+[code]$gameMap.getPixelRegion(x, y);[/code]
+  <ol>x and y default to players center location.</ol><br>
+  return value is a string of the hex color.<br><br>
+
+  <b>Create a collider</b>
+[code]var myBoxCollider = new QuasiMovement.Box_Collider(w, h, ox, oy, shiftY);[/code]
+  For circle:
+[code]var myCircleCollider = new QuasiMovement.Circle_Collider(w, h, ox, oy, shiftY);[/code]
+  <ol>x and y default to players center location.</ol><br>
+  return value is a string of the hex color.<br><br>
+
+  <b>Moving Colliders</b>
+[code]myCollider.moveto(x, y);[/code]
+  <ol>Set X and Y in pixel terms.</ol><br>
+  Also use the variable that you used to make the collider.<br><br>
+
+  <b>Showing Custom collider on map</b>
+[code]SceneManager._scene.addTempCollider(collider, duration);[/code]
+  <ol><strong>collider</strong>: the collider object<br>
+  <strong>duration</strong>: the duration it will display<br></ol>
+  (Only works if you're in Scene_Map!)<br><br>
+
+  <b>Get characters that overlap with a collider</b>
+[code]$gameMap.getCharactersAt(collider, ignore);[/code]
+  <ol><strong>collider</strong>: the collider object<br>
+  <strong>Ignore</strong>: a function that returns return to ignore<br></ol>
+  Returns an Array of characters it overlays.<br>
+  (Search this plugin for an example usage if needed)<br><br>
+
+  <b>Get map tiles that overlap with collider</b>
+[code]$gameMap.getTileBoxesAt(collider);[/code]
+  <ol><strong>collider</strong>: the collider object<br></ol>
+  Returns an Array of tilesboxes it overlays.<br>
+  You will need to manually filter this array because there is no ignore parameter, so it returns all tiles.<br>
+  (Search this plugin for an example usage if needed)
+</div>
+
+<!--nextpage-->
+
+<a href="http://quasixi.com/quasi-sight/">Line of Sight</a>
+<a href="http://quasixi.com/quasi-pathfind/">Pathfind</a>
+<a href="http://quasixi.com/quasi-region-events/">Region Events</a>
