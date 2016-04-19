@@ -14,6 +14,9 @@ Click on the Download Zip button on the upper right of the page<br>
  * Copy the files and folders from this Demo folder into the new project and accept to replace files
  * Open project and play test.
 
+<b>Reporting Bugs / Issues:</b><br>
+If you want to report a bug, please create a new issue on <a href="https://github.com/quasixi/Quasi-MV-Master-Demo/issues">Github</a>. Try to explain the bug as best as possible and any screenshots or videos if you can. If you just have questions, please ask them here at <a href="http://forums.rpgmakerweb.com/index.php?/topic/48741-quasi-movement/">RPGMaker Webs</a>.
+
 <b>TERMS OF USE FOR NON-COMMERCIAL AND COMMERCIAL:</b>
  * Free to use and modify.
  * Do not claim the Plugins as your own.
