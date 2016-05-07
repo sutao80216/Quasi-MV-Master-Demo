@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Params Plus
-// Version: 1.12
-// Last Update: March 17, 2016
+// Version: 1.13
+// Last Update: May 6, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -16,12 +16,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_ParamsPlus = 1.12;
+Imported.Quasi_ParamsPlus = 1.13;
 
 //=============================================================================
  /*:
  * @plugindesc Adds improvements to parameters
- * Version: 1.12
+ * Version: 1.13
  * <QuasiParamsPlus>
  * @author Quasi      Site: http://quasixi.com
  *
@@ -192,42 +192,42 @@ Imported.Quasi_ParamsPlus = 1.12;
  */
 //=============================================================================
 
-var QuasiParams = (function() {
-  var Params = {};
-  Params.public = {};
-  Params.plugin = $plugins.filter(function(p) { return p.description.contains('<QuasiParamsPlus>'); })[0].parameters;
-  Params.public.id = {
+var QuasiParams = {};
+(function() {
+  var _plugin = $plugins.filter(function(p) { return p.description.contains('<QuasiParamsPlus>') && p.status; })[0].parameters;
+
+  QuasiParams._id = {
     "mhp": 0,  "mmp": 1,  "atk": 2,  "def": 3,
     "mat": 4,  "mdf": 5,  "agi": 6,  "luk": 7,
     "hrt": 8,  "mrt": 9,  "trt": 10, "mcc": 11,
     "tcc": 12, "pdc": 13, "mdc": 14, "fdc": 15,
     "exc": 16
   };
-  Params.public.xid = {
+  QuasiParams._xid = {
     "hit": 0, "eva": 1, "cri": 2, "cev": 3,
     "mev": 4, "mrf": 5, "cnt": 6, "hrg": 7,
     "mrg": 8, "trg": 9
   };
-  Params.public.sid = {
+  QuasiParams._sid = {
     "trg": 0, "grd": 1, "rec": 2, "pha": 3,
     "mcr": 4, "tcr": 5, "pdr": 6, "mdr": 7,
     "fdr": 8, "exr": 9
   };
 
-  Params.states = {};
-  Params.stateParamsPlus = function(stateId) {
-    if (!this.states[stateId]) {
+   QuasiParams._states = {};
+   QuasiParams.stateParamsPlus = function(stateId) {
+    if (!this._states[stateId]) {
       var params = /<params>([\s\S]*)<\/params>/i.exec($dataStates[stateId].note);
-      this.states[stateId] = params ? this.stringToObjAry(params[1]) :  0;
+      this._states[stateId] = params ? this.stringToObjAry(params[1]) :  0;
     }
-    return this.states[stateId];
+    return this._states[stateId];
   };
 
-  Params.equips = [];
-  Params.equips[0] = {}; // weapons
-  Params.equips[1] = {}; // armors
-  Params.equipParamsPlus = function(equip) {
-    var data = !equip.atypeId ? this.equips[0] : this.equips[1];
+   QuasiParams._equips = [];
+   QuasiParams._equips[0] = {}; // weapons
+   QuasiParams._equips[1] = {}; // armors
+   QuasiParams.equipParamsPlus = function(equip) {
+    var data = !equip.atypeId ? this._equips[0] : this._equips[1];
     var id   = equip.baseItemId || equip.id;
     if (!data[id]) {
       var dataBase = !equip.atypeId ? $dataWeapons : $dataArmors;
@@ -238,19 +238,19 @@ var QuasiParams = (function() {
     return data[id];
   };
 
-  Params.charas = [];
-  Params.charas[0] = {}; // actors
-  Params.charas[1] = {}; // classes
-  Params.charas[2] = {}; // enemies
-  Params.charaParamsPlus = function(charaId, type) {
+   QuasiParams._charas = [];
+   QuasiParams._charas[0] = {}; // actors
+   QuasiParams._charas[1] = {}; // classes
+   QuasiParams._charas[2] = {}; // enemies
+   QuasiParams.charaParamsPlus = function(charaId, type) {
     if (type === "actor") {
-      var data = this.charas[0];
+      var data = this._charas[0];
       var note = $dataActors[charaId].note;
     } else if (type === "class") {
-      var data = this.charas[1];
+      var data = this._charas[1];
       var note = $dataClasses[charaId].note;
     } else if (type === "enemy") {
-      var data = this.charas[2];
+      var data = this._charas[2];
       var note = $dataEnemies[charaId].note;
     }
     if (!data[charaId]) {
@@ -260,22 +260,22 @@ var QuasiParams = (function() {
     return data[charaId];
   };
 
-  Params.rates = {xParam: {}, sParam: {}};
-  Params.rates["xParam"][0] = {}; // actors
-  Params.rates["sParam"][0] = {}; // actors
-  Params.rates["xParam"][1] = {}; // classes
-  Params.rates["sParam"][1] = {}; // classes
-  Params.rates["xParam"][2] = {}; // enemies
-  Params.rates["sParam"][2] = {}; // enemies
-  Params.rateParamsPlus = function(charaId, type, pType) {
+   QuasiParams._rates = {xParam: {}, sParam: {}};
+   QuasiParams._rates["xParam"][0] = {}; // actors
+   QuasiParams._rates["sParam"][0] = {}; // actors
+   QuasiParams._rates["xParam"][1] = {}; // classes
+   QuasiParams._rates["sParam"][1] = {}; // classes
+   QuasiParams._rates["xParam"][2] = {}; // enemies
+   QuasiParams._rates["sParam"][2] = {}; // enemies
+   QuasiParams.rateParamsPlus = function(charaId, type, pType) {
     if (type === "actor") {
-      var data = this.rates[pType][0];
+      var data = this._rates[pType][0];
       var note = $dataActors[charaId].note;
     } else if (type === "class") {
-      var data = this.rates[pType][1];
+      var data = this._rates[pType][1];
       var note = $dataClasses[charaId].note;
     } else if (type === "enemy") {
-      var data = this.rates[pType][2];
+      var data = this._rates[pType][2];
       var note = $dataEnemies[charaId].note;
     }
     if (!data[charaId]) {
@@ -292,9 +292,9 @@ var QuasiParams = (function() {
     return data[charaId];
   };
 
-  Params.custom = [];
-  Params.useCustom = (Params.plugin['Use Custom Parameters'].toLowerCase() === 'true');
-  Params.loadCustomParams = function() {
+   QuasiParams._custom = [];
+   QuasiParams.useCustom = _plugin['Use Custom Parameters'].toLowerCase() === 'true';
+   QuasiParams.loadCustomParams = function() {
     if (this.useCustom) {
       var xhr = new XMLHttpRequest();
       var url = 'data/Parameters.json';
@@ -302,42 +302,42 @@ var QuasiParams = (function() {
       xhr.overrideMimeType('application/json');
       xhr.onload = function() {
         if (xhr.status < 400) {
-          Params.custom = JSON.parse(xhr.responseText);
+          QuasiParams._custom = JSON.parse(xhr.responseText);
         }
       };
       xhr.send();
     }
   };
-  Params.loadCustomParams();
+  QuasiParams.loadCustomParams();
 
-  Params.public.customAbr = function(id) {
-    return Params.custom[id].abr;
+  QuasiParams._customAbr = function(id) {
+    return QuasiParams._custom[id].abr;
   };
 
-  Params.public.customName = function(id) {
-    return Params.custom[id].name;
+  QuasiParams._customName = function(id) {
+    return QuasiParams._custom[id].name;
   };
 
-  Params.public.customMax = function(id) {
-    return Params.custom[id].max;
+  QuasiParams._customMax = function(id) {
+    return QuasiParams._custom[id].max;
   };
 
-  Params.public.customMin = function(id) {
-    return Params.custom[id].min;
+  QuasiParams._customMin = function(id) {
+    return QuasiParams._custom[id].min;
   };
 
-  Params.stringToObjAry = function(string) {
+  QuasiParams.stringToObjAry = function(string) {
     var ary = string.split('\n');
     var obj = {};
     ary = ary.filter(function(i) { return i != ""; });
     ary.forEach(function(e) {
       var s = /^(.*):(.*)/.exec(e);
       if (s) {
-        var id = Params.public.id[s[1].toLowerCase()];
+        var id = QuasiParams._id[s[1].toLowerCase()];
         if (typeof id === 'undefined') {
           var p = s[1].toLowerCase();
-          for (var i = 0; i < Params.custom.length; i++) {
-            if (Params.custom[i]["abr"] === p) break;
+          for (var i = 0; i < QuasiParams._custom.length; i++) {
+            if (QuasiParams._custom[i]["abr"] === p) break;
           }
           id = 17 + i;
         }
@@ -347,7 +347,7 @@ var QuasiParams = (function() {
     return obj;
   };
 
-  Params.stringToRateAry = function(string, pType) {
+  QuasiParams.stringToRateAry = function(string, pType) {
     var ary = string.split('\n');
     var obj = {};
     ary = ary.filter(function(i) { return i != ""; });
@@ -356,9 +356,9 @@ var QuasiParams = (function() {
       if (s) {
         s = s.map(function(i) { return i.replace(/\s+/g,'')});
         if (pType === "xParam") {
-          var id = Params.public.xid[s[3].toLowerCase()];
+          var id = QuasiParams._xid[s[3].toLowerCase()];
         } else {
-          var id = Params.public.sid[s[3].toLowerCase()];
+          var id = QuasiParams._sid[s[3].toLowerCase()];
         }
         var stat  = s[2].toLowerCase();
         var value = Number(s[1] || 1);
@@ -368,7 +368,7 @@ var QuasiParams = (function() {
     return obj;
   };
 
-  Params.stringToRateObj = function(string, pType) {
+  QuasiParams.stringToRateObj = function(string, pType) {
     var ary = string.split('\n');
     var obj = {};
     ary = ary.filter(function(i) { return i != ""; });
@@ -376,9 +376,9 @@ var QuasiParams = (function() {
       var s = /^(.*):(.*)/.exec(e);
       if (s) {
         if (pType === "xParam") {
-          var id = Params.public.xid[s[1].toLowerCase()];
+          var id = QuasiParams._xid[s[1].toLowerCase()];
         } else {
-          var id = Params.public.sid[s[1].toLowerCase()];
+          var id = QuasiParams._sid[s[1].toLowerCase()];
         }
         obj[id] = s[2];
       }
@@ -416,11 +416,11 @@ var QuasiParams = (function() {
   Game_BattlerBase.prototype.initMembers = function() {
     Alias_Game_BattlerBase_initMembers.call(this);
     this._cParamPlus = {};
-    Params.custom.forEach(function(param, index) {
-      this._cParamPlus[index] = Params.custom[index].default;
+    QuasiParams._custom.forEach(function(param, index) {
+      this._cParamPlus[index] = QuasiParams._custom[index].default;
     }, this);
-    if (!Params.addedCustoms) {
-      Params.custom.forEach(function(param, index) {
+    if (!QuasiParams._addedCustoms) {
+      QuasiParams._custom.forEach(function(param, index) {
         if (param["abr"] in this) {
           alert("Can not use the abbreviation " + param["abr"] + ". It already exists.");
         } else {
@@ -429,7 +429,7 @@ var QuasiParams = (function() {
           Object.defineProperties(Game_BattlerBase.prototype, newProperty);
         }
       }, this);
-      Params.addedCustoms = true;
+      QuasiParams._addedCustoms = true;
     }
   };
 
@@ -471,7 +471,7 @@ var QuasiParams = (function() {
     var value = 0;
     var states = this.states();
     for (var i = 0; i < states.length; i++) {
-      var params = Params.stateParamsPlus(states[i].id);
+      var params = QuasiParams.stateParamsPlus(states[i].id);
       if (params[paramId]) {
         value += this.evalParamFormula(params[paramId], currentValue);
       }
@@ -498,7 +498,7 @@ var QuasiParams = (function() {
   Game_BattlerBase.prototype.charaParamPlus = function(paramId, charaId, type, currentValue) {
     if (type) {
       var value = 0;
-      var params = Params.charaParamsPlus(charaId, type);
+      var params = QuasiParams.charaParamsPlus(charaId, type);
       if (params[paramId]) {
         value += this.evalParamFormula(params[paramId], currentValue);
       }
@@ -521,7 +521,7 @@ var QuasiParams = (function() {
   Game_BattlerBase.prototype.rateParamPlus = function(paramId, charaId, type, pType) {
     if (type) {
       var value = 0;
-      var params = Params.rateParamsPlus(charaId, type, pType);
+      var params = QuasiParams.rateParamsPlus(charaId, type, pType);
       if (params[paramId]) {
         var a = this;
         value += eval(params[paramId]);
@@ -542,8 +542,8 @@ var QuasiParams = (function() {
 
   Game_BattlerBase.prototype.cParam = function(cParamId) {
     var value = this.qParam(cParamId + 9);
-    var min   = typeof Params.public.customMin(cParamId) === 'number' ? Params.public.customMin(cParamId) : value;
-    var max   = typeof Params.public.customMax(cParamId) === 'number' ? Params.public.customMax(cParamId) : value;
+    var min   = typeof QuasiParams._customMin(cParamId) === 'number' ? QuasiParams._customMin(cParamId) : value;
+    var max   = typeof QuasiParams._customMax(cParamId) === 'number' ? QuasiParams._customMax(cParamId) : value;
     return value.clamp(min, max);;
   };
 
@@ -601,7 +601,7 @@ var QuasiParams = (function() {
     var equips = this.equips();
     equips.forEach(function(equip) {
       if (equip) {
-        var params = Params.equipParamsPlus(equip);
+        var params = QuasiParams.equipParamsPlus(equip);
         if (params[paramId]) {
           value += this.evalParamFormula(params[paramId], currentValue);
         }
@@ -689,6 +689,4 @@ var QuasiParams = (function() {
     }
     return rate;
   };
-
-  return Params.public;
 })();
