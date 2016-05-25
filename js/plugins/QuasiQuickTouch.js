@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Quick Touch
-// Version: 1.00
-// Last Update: May 14, 2016
+// Version: 1.01
+// Last Update: May 25, 2016
 //=============================================================================
 // ** Terms of Use
 // https://github.com/quasixi/Quasi-MV-Master-Demo/blob/master/README.md
@@ -15,19 +15,14 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiQuickTouch = 1.00;
+Imported.QuasiQuickTouch = 1.01;
 
 //=============================================================================
  /*:
  * @plugindesc Select windows activate on single click
- * Version 1.00
+ * Version 1.01
  * <QuasiQuickTouch>
  * @author Quasi       Site: http://quasixi.com
- *
- * @help
- * ============================================================================
- * ** Quasi Quick Touch v1.00
- * ============================================================================
  */
 //=============================================================================
 
@@ -47,6 +42,12 @@ Imported.QuasiQuickTouch = 1.00;
   //
   // The window class with cursor movement and scroll functions.
 
+  var Alias_Window_Selectable_initialize = Window_Selectable.prototype.initialize;
+  Window_Selectable.prototype.initialize = function(x, y, width, height) {
+    Alias_Window_Selectable_initialize.call(this, x, y, width, height);
+    this._oldTouchX = TouchInput.x;
+    this._oldTouchY = TouchInput.y;
+  };
 
   Window_Selectable.prototype.processTouch = function() {
     if (this.isOpenAndActive()) {
@@ -54,7 +55,7 @@ Imported.QuasiQuickTouch = 1.00;
         var x = this.canvasToLocalX(TouchInput.x);
         var y = this.canvasToLocalY(TouchInput.y);
         var hitIndex = this.hitTest(x, y);
-        if (hitIndex >= 0 && this.isCursorMovable()) {
+        if (hitIndex >= 0 && this.isCursorMovable() && this.mouseMoved()) {
           this.select(hitIndex);
         }
         if (TouchInput.isTriggered()) {
@@ -71,5 +72,14 @@ Imported.QuasiQuickTouch = 1.00;
         }
       }
     }
+  };
+
+  Window_Selectable.prototype.mouseMoved = function() {
+    if (this._oldTouchX !== TouchInput.x || this._oldTouchY !== TouchInput.y) {
+      this._oldTouchX = TouchInput.x;
+      this._oldTouchY = TouchInput.y;
+      return true;
+    }
+    return false;
   };
 }());
