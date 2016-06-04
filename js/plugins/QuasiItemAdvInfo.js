@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Item Scene
-// Version: 1.00
-// Last Update: May 31, 2016
+// Version: 1.01
+// Last Update: June 4, 2016
 //=============================================================================
 // ** Terms of Use
 // hhttps://github.com/quasixi/Quasi-MV-Master-Demo/blob/master/README.md
@@ -19,12 +19,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiItemScene = 1.00;
+Imported.QuasiItemScene = 1.01;
 
 //=============================================================================
  /*:
  * @plugindesc Customizes the Item Scene
- * Version 1.00
+ * Version 1.01
  * <QuasiItemScene>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -114,6 +114,11 @@ function Window_ItemPage() {
   this.initialize.apply(this, arguments);
 }
 
+function Window_QItemList() {
+  this.initialize.apply(this, arguments);
+}
+
+
 //-----------------------------------------------------------------------------
 // Quasi Item Adv Info
 
@@ -155,9 +160,15 @@ var QuasiItemScene = {};
     }
   };
 
-  var Alias_Scene_Item_createItemWindow = Scene_Item.prototype.createItemWindow;
   Scene_Item.prototype.createItemWindow = function() {
-    Alias_Scene_Item_createItemWindow.call(this);
+    var wy = this._categoryWindow.y + this._categoryWindow.height;
+    var wh = Graphics.boxHeight - wy;
+    this._itemWindow = new Window_QItemList(0, wy, Graphics.boxWidth, wh);
+    this._itemWindow.setHelpWindow(this._helpWindow);
+    this._itemWindow.setHandler('ok',     this.onItemOk.bind(this));
+    this._itemWindow.setHandler('cancel', this.onItemCancel.bind(this));
+    this.addWindow(this._itemWindow);
+    this._categoryWindow.setItemWindow(this._itemWindow);
     this.createItemInfoWindow();
   };
 
@@ -273,40 +284,41 @@ var QuasiItemScene = {};
   //
   // The window for selecting an item on the item screen.
 
-  Window_ItemList.prototype.maxCols = function() {
+  Window_QItemList.prototype = Object.create(Window_ItemList.prototype);
+  Window_QItemList.prototype.constructor = Window_QItemList;
+
+  Window_QItemList.prototype.maxCols = function() {
     return QuasiItemScene.itemCols;
   };
 
-  Window_ItemList.prototype.spacing = function() {
+  Window_QItemList.prototype.spacing = function() {
       return QuasiItemScene.itemSpacing;
   };
 
-  var Alias_Window_ItemList_includes = Window_ItemList.prototype.includes;
-  Window_ItemList.prototype.includes = function(item) {
+  Window_QItemList.prototype.includes = function(item) {
     if (!QuasiItemScene.showCategories) {
       return true;
     }
-    return Alias_Window_ItemList_includes.call(this, item);
+    return Window_ItemList.prototype.includes.call(this, item);
   };
 
-  var Alias_Window_ItemList_updateHelp = Window_ItemList.prototype.updateHelp;
-  Window_ItemList.prototype.updateHelp = function() {
-    Alias_Window_ItemList_updateHelp.call(this);
+  Window_QItemList.prototype.updateHelp = function() {
+    Window_ItemList.prototype.updateHelp.call(this);
     this.setAdvInfoItem(this.item());
   };
 
-  Window_ItemList.prototype.setAdvInfoWindow = function(window) {
+  Window_QItemList.prototype.setAdvInfoWindow = function(window) {
     this._pageWindow = window;
     this.callUpdateHelp();
   };
 
-  Window_ItemList.prototype.setAdvInfoItem = function(item) {
+  Window_QItemList.prototype.setAdvInfoItem = function(item) {
     if (this._pageWindow) {
       this._pageWindow.setItem(item);
     }
   };
 
-  Window_ItemList.prototype.drawItem = function(index) {
+  Window_QItemList.prototype.drawItem = function(index) {
     var item = this._data[index];
     if (item) {
       var rect = this.itemRect(index);
@@ -320,7 +332,7 @@ var QuasiItemScene = {};
     }
   };
 
-  Window_ItemList.prototype.drawFormatText = function(item, x, y, w) {
+  Window_QItemList.prototype.drawFormatText = function(item, x, y, w) {
     var format = QuasiItemScene.itemFormat;
     var code = "";
     var checking = false;
