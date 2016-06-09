@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Simple Shadows
-// Version: 1.041
-// Last Update: March 20, 2016
+// Version: 1.05
+// Last Update: June 4, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -21,12 +21,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSimpleShadows = 1.041;
+Imported.QuasiSimpleShadows = 1.05;
 
 //=============================================================================
  /*:
  * @plugindesc Adds Simple Shadows to characters
- * Version 1.041
+ * Version 1.05
  * <QuasiSimpleShadows>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -56,7 +56,7 @@ Imported.QuasiSimpleShadows = 1.041;
  *
  * @help
  * ============================================================================
- * ** Quasi Simple Shadows v1.00
+ * ** Quasi Simple Shadows v1.05
  * ============================================================================
  * ** Links
  * ============================================================================
@@ -92,7 +92,7 @@ var QuasiSimpleShadows = {};
   QuasiSimpleShadows._mapId = null;
 
   QuasiSimpleShadows._shadowLayer = new Sprite();
-  QuasiSimpleShadows._shadowLayer.z = 0;
+  QuasiSimpleShadows._shadowLayer.z = 1;
 
   // Creates a radial gradient texture and returns
   // a sprite using that texture
@@ -225,21 +225,41 @@ var QuasiSimpleShadows = {};
     }
   };
 
-  Game_CharacterBase.prototype.setupSimpleShadow = function(radius) {
+  Game_CharacterBase.prototype.setupSimpleShadow = function(radius, str, delay) {
     this._simpleShadowRadius = radius || QuasiSimpleShadows.defaultRadius;
+    this._simpleShadowFlickerStr   = str || 0;
+    this._simpleShadowFlickerDelay = delay || 0;
     QuasiSimpleShadows._sources.push(this);
   };
 
   Game_CharacterBase.prototype.clearSimpleShadow = function() {
     this._simpleShadowRadius = 0;
+    this._simpleShadowFlickerStr   = 0;
+    this._simpleShadowFlickerDelay = 0;
     var i = QuasiSimpleShadows._sources.indexOf(this);
     if (i > 0) {
       QuasiSimpleShadows._sources.splice(i, 1);
     }
   };
 
-  Game_Character.prototype.setHasShadow = function(bool) {
+  Game_CharacterBase.prototype.setHasShadow = function(bool) {
     this._hasShadow = bool;
+  };
+
+  Game_CharacterBase.prototype.shadowOffsetX = function() {
+    return 0;
+  };
+
+  Game_CharacterBase.prototype.shadowOffsetY = function() {
+    return 0;
+  };
+
+  Game_CharacterBase.prototype.shadowAnchorX = function() {
+    return 0.5;
+  };
+
+  Game_CharacterBase.prototype.shadowAnchorY = function() {
+    return 1;
   };
 
   //-----------------------------------------------------------------------------
@@ -264,15 +284,55 @@ var QuasiSimpleShadows = {};
     if (/<lightsource>/i.test(notes) || /<shadowsource>/i.test(notes)) {
       this.setupSimpleShadow(QuasiSimpleShadows.defaultRadius);
     } else {
-      var source = /<lightsource:([0-9]*?)>/i.exec(notes);
+      var source = /<lightsource:([0-9,]*?)>/i.exec(notes);
       if (!source) {
-        source = /<shadowsource:([0-9]*?)>/i.exec(notes);
+        source = /<shadowsource:([0-9,]*?)>/i.exec(notes);
       }
       if (source) {
-        var radius = Number(source[1]) || 1;
-        this.setupSimpleShadow(radius);
+        var settings = source[1].split(",").map(function(i) { return Number(i) });
+        var radius = settings[0] || 1;
+        var flickerStr = settings[1];
+        var flickerDelay = settings[2];
+        this.setupSimpleShadow(radius, flickerStr, flickerDelay);
       }
     }
+  };
+
+  Game_Event.prototype.comments = function() {
+    if (!this.page() || !this.list()) {
+      return "";
+    }
+    var comments = this.list().filter(function(list) {
+      return list.code === 108 || list.code === 408;
+    });
+    comments = comments.map(function(list) {
+      return list.parameters;
+    });
+    return comments.join('\n');
+  };
+
+  Game_Event.prototype.shadowOffsetX = function() {
+    var comments = this.comments();
+    var offset = /<shadowOX:(-?\d+?)>/i.exec(comments);
+    return offset ? Number(offset[1]) : 0;
+  };
+
+  Game_Event.prototype.shadowOffsetY = function() {
+    var comments = this.comments();
+    var offset = /<shadowOY:(-?\d+?)>/i.exec(comments);
+    return offset ? Number(offset[1]) : 0;
+  };
+
+  Game_Event.prototype.shadowAnchorX = function() {
+    var comments = this.comments();
+    var anchor = /<shadowAnchorX:(.*?)>/i.exec(comments);
+    return anchor ? Number(anchor[1]) : 0.5;
+  };
+
+  Game_Event.prototype.shadowAnchorY = function() {
+    var comments = this.comments();
+    var anchor = /<shadowAnchorY:(.*?)>/i.exec(comments);
+    return anchor ? Number(anchor[1]) : 1;
   };
 
   //-----------------------------------------------------------------------------
@@ -342,8 +402,14 @@ var QuasiSimpleShadows = {};
 
   Sprite_CharacterShadow.prototype.initialize = function(character, source) {
     Sprite_Character.prototype.initialize.call(this, character);
+    this.anchor.x = character.shadowAnchorX();
+    this.anchor.y = character.shadowAnchorY();
+    this.ox = character.shadowOffsetX();
+    this.oy = character.shadowOffsetY();
     this._source = source;
     this._sourceRadius = source._simpleShadowRadius;
+    this._sourceFlickerStr = source._simpleShadowFlickerStr;
+    this._sourceFlickerDelay = source._simpleShadowFlickerDelay;
     this.setBlendColor([0, 0, 0, 255]);
     if (QuasiSimpleShadows.enableBlur) {
       var blur = new PIXI.BlurFilter();
@@ -367,11 +433,12 @@ var QuasiSimpleShadows = {};
     this.updatePosition();
     this.updateRotation();
     this.updateScaleOpacity();
+    this.updateFlicker();
   };
 
   Sprite_CharacterShadow.prototype.updatePosition = function() {
-    this.x = this._character.screenX();
-    this.y = this._character.screenY() - 10;
+    this.x = this._character.screenX() + this.ox;
+    this.y = this._character.screenY() - 10 + this.oy;
     this.z = this._character.screenZ() - 1;
   };
 
@@ -421,6 +488,17 @@ var QuasiSimpleShadows = {};
       }
       this.alpha = size / sLength;
     }
+  };
+
+  Sprite_CharacterShadow.prototype.updateFlicker = function() {
+    if (!this._sourceFlickerStr) return;
+    var str = this._sourceFlickerStr;
+    var delay = this._sourceFlickerDelay || 1;
+    if (!this._flickerDelay) {
+      this._flicker = Math.random() * str - str / 2;
+    }
+    this.scale.y += this._flicker / 100;
+    this._flickerDelay = Math.floor(Math.random() * delay);
   };
 
   //-----------------------------------------------------------------------------
