@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Sprite Costumes
-// Version: 1.00
-// Last Update: March 18, 2016
+// Version: 1.01
+// Last Update: June 9, 2016
 //=============================================================================
 // ** Terms of Use
 // https://github.com/quasixi/RPG-Maker-MV/blob/master/README.md
@@ -20,18 +20,18 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSpriteCostumes = 1.00;
+Imported.QuasiSpriteCostumes = 1.01;
 
 //=============================================================================
  /*:
  * @plugindesc Quasi Sprite Addon: Adds a costumes feature
- * Version 1.00
+ * Version 1.01
  * <QuasiSpriteCostumes>
  * @author Quasi       Site: http://quasixi.com
  *
  * @help
  * ============================================================================
- * ** Quasi Sprite Costumes v1.00
+ * ** Quasi Sprite Costumes v1.01
  * ============================================================================
  * ** Links
  * ============================================================================
@@ -175,7 +175,7 @@ var QuasiSpriteCostumes = {};
     var actor  = this._character.actor();
     if (!actor) return;
     var equips = actor.equips();
-    for (var i = 0; i < equips.length; i++) {
+    for (var i = equips.length - 1; i >= 0; i--) {
       if (!equips[i]) continue;
       var id      = equips[i].baseItemId || equips[i].id;
       var costume = QuasiSpriteCostumes.equipCostume(equips[i]);
