@@ -1,6 +1,6 @@
 //=============================================================================
 // Quasi Simple Shadows
-// Version: 1.05
+// Version: 1.051
 // Last Update: June 4, 2016
 //=============================================================================
 // ** Terms of Use
@@ -21,12 +21,12 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSimpleShadows = 1.05;
+Imported.QuasiSimpleShadows = 1.051;
 
 //=============================================================================
  /*:
  * @plugindesc Adds Simple Shadows to characters
- * Version 1.05
+ * Version 1.051
  * <QuasiSimpleShadows>
  * @author Quasi       Site: http://quasixi.com
  *
@@ -56,7 +56,7 @@ Imported.QuasiSimpleShadows = 1.05;
  *
  * @help
  * ============================================================================
- * ** Quasi Simple Shadows v1.05
+ * ** Quasi Simple Shadows v1.051
  * ============================================================================
  * ** Links
  * ============================================================================
@@ -142,7 +142,9 @@ var QuasiSimpleShadows = {};
         var id = Number(args[1]);
         var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
         var radius = Number(args[2]);
-        chara.setupSimpleShadow(radius);
+        var str = Number(args[3]);
+        var delay = Number(args[4]);
+        chara.setupSimpleShadow(radius, str, delay);
       }
       if (args[0].toLowerCase() === "removeshadowsource") {
         var id = Number(args[1]);
