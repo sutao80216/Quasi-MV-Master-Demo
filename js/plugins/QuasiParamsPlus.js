@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Params Plus
-// Version: 1.13
-// Last Update: May 6, 2016
+// Version: 1.14
+// Last Update: July 10, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -16,13 +16,13 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_ParamsPlus = 1.13;
+Imported.Quasi_ParamsPlus = 1.14;
 
 //=============================================================================
  /*:
- * @plugindesc Adds improvements to parameters
- * Version: 1.13
+ * @plugindesc v1.14 Adds improvements to parameters
  * <QuasiParamsPlus>
+ *
  * @author Quasi      Site: http://quasixi.com
  *
  * @param Use Custom Parameters
@@ -233,6 +233,18 @@ var QuasiParams = {};
       var dataBase = !equip.atypeId ? $dataWeapons : $dataArmors;
       var note     = equip.note || dataBase[id].note;
       var params   = /<params>([\s\S]*)<\/params>/i.exec(note);
+      data[id]     = params ? this.stringToObjAry(params[1]) : data[id] || {};
+    }
+    return data[id];
+  };
+
+  QuasiParams._items = [];
+  QuasiParams.itemParamsPlus = function(item) {
+    var data = this._items;
+    var id   = item.baseItemId || item.id;
+    if (!data[id]) {
+      var note = $dataItems[id].note;
+      var params = /<params>([\s\S]*)<\/params>/i.exec(note);
       data[id]     = params ? this.stringToObjAry(params[1]) : data[id] || {};
     }
     return data[id];
@@ -660,13 +672,25 @@ var QuasiParams = {};
       value = Math.round(value);
       return value;
     };
-  }
+  };
 
   var Alias_Game_Action_applyItemUserEffect = Game_Action.prototype.applyItemUserEffect;
   Game_Action.prototype.applyItemUserEffect = function(target) {
     Alias_Game_Action_applyItemUserEffect.call(this, target);
     var value = Math.floor(this.subject().tcc);
     this.subject().gainSilentTp(value);
+    var obj = QuasiParams.itemParamsPlus(this.item());
+    for (var param in obj) {
+      if (!obj.hasOwnProperty(param)) continue;
+      var string = obj[param];
+      if (param < 8) {
+        var value = this.subject().evalParamFormula(string, this.subject().param(param));
+        this.subject().addParam(param, value);
+      } else if (param > 16) {
+        var value = this.subject().evalParamFormula(string, this.subject().qParam(param));
+        this.subject().addCParam(param - 17, value);
+      }
+    }
   };
 
   Game_Action.prototype.itemHit = function(target) {
