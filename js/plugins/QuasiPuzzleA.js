@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Puzzle A
-// Version: 1.01
-// Last Update: March 12, 2016
+// Version: 1.02
+// Last Update: July 10, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -25,9 +25,10 @@ Imported.QuasiPuzzleA = 1.01;
 
 //=============================================================================
  /*:
- * @plugindesc Makes creating puzzle mechanics easier.
- * Version: 1.01
+ * @plugindesc v 1.02
+ * Makes creating puzzle mechanics easier.
  * <QuasiPuzzleA>
+ *
  * @author Quasi       Site: http://quasixi.com
  *
  * @help
@@ -49,7 +50,7 @@ Imported.QuasiPuzzleA = 1.01;
 // Quasi Puzzle A
 
 var QuasiPuzzleA = {};
-(function(QuasiPuzzleA) {
+(function() {
   //-----------------------------------------------------------------------------
   // Game_CharacterBase
   //
@@ -114,10 +115,10 @@ var QuasiPuzzleA = {};
   if (Imported.Quasi_Movement) {
     var Alias_Game_CharacterBase_ignoreCollisionWithCharacter = Game_CharacterBase.prototype.ignoreCollisionWithCharacter;
     Game_CharacterBase.prototype.ignoreCollisionWithCharacter = function(chara, self) {
-      if (chara === self._bindedTo || chara === this._bindedBy) {
+      if (chara === self._bindedTo || chara === self._bindedBy) {
         return true;
       }
-      return Alias_Game_CharacterBase_ignoreCollisionWithCharacter.call(this, chara, self);
+      return Alias_Game_CharacterBase_ignoreCollisionWithCharacter.call(self, chara, self);
     };
   }
 
@@ -133,6 +134,20 @@ var QuasiPuzzleA = {};
       return false;
     }
     return Alias_Game_CharacterBase_moveStraight.call(this, d);
+  };
+
+  var Alias_Game_CharacterBase_moveDiagonally = Game_CharacterBase.prototype.moveDiagonally;
+  Game_CharacterBase.prototype.moveDiagonally = function(horz, vert) {
+    if (this.isBinding()) {
+      var thisPassed = this.canPassDiagonally(this._x, this._y, horz, vert);
+      var bindedToPassed = this._bindedTo.canPassDiagonally(this._bindedTo._x, this._bindedTo._y, horz, vert);
+      if (thisPassed && bindedToPassed) {
+        this._bindedTo.moveDiagonally(horz, vert);
+        Alias_Game_CharacterBase_moveDiagonally.call(this, horz, vert);
+      }
+      return false;
+    }
+    return Alias_Game_CharacterBase_moveDiagonally.call(this, horz, vert);
   };
 
   Game_CharacterBase.prototype.weight = function() {
@@ -312,4 +327,4 @@ var QuasiPuzzleA = {};
     Alias_Game_Event_update.call(this);
   };
 
-}(QuasiPuzzleA));
+}());
