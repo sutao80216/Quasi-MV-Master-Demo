@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Audio
-// Version: 1.00
-// Last Update: July 24, 2016
+// Version: 1.01
+// Last Update: July 25, 2016
 //=============================================================================
 // ** Terms of Use
 // https://github.com/quasixi/Quasi-MV-Master-Demo/blob/master/README.md
@@ -15,11 +15,11 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiAudio = 1.00;
+Imported.QuasiAudio = 1.01;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Quasi Audio
+ * @plugindesc v1.01 Quasi Audio
  * @author Quasi
  *
  * @help
@@ -30,9 +30,13 @@ Imported.QuasiAudio = 1.00;
  * Plugin Commands:
  * Play a Q Audio at X Y:
  *     qaudio play ID TYPE AUDIO MAXVOLUME RADIUS X Y
+ *   To loop the audio:
+ *     qaudio loop ID TYPE AUDIO MAXVOLUME RADIUS X Y
  *
  * Play a Q Audio at event location ( follows event )
  *     qaudio play ID TYPE AUDIO MAXVOLUME RADIUS EVENTID
+ *   To loop the audio:
+ *     qaudio loop ID TYPE AUDIO MAXVOLUME RADIUS EVENTID
  *
  *   ID - A Unique ID for the audio, can be a number or letter.
  *        Used for stopping the audio
@@ -64,8 +68,27 @@ Imported.QuasiAudio = 1.00;
   var Alias_Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
   Game_Interpreter.prototype.pluginCommand = function(command, args) {
     if (command.toLowerCase() === "qaudio") {
-      if (args[0].toLowerCase() === "play") {
+      if (args[0].toLowerCase() === "loop" || args[0].toLowerCase() === "play") {
+        var loop = args[0].toLowerCase() === "loop";
         var id = args[1];
+        if (id === "*") {
+          id = "*0";
+          var counter = 0;
+          var newId = false;
+          while(!newId) {
+            if (AudioManager._QAudioBuffers.length === 0) {
+              newId = true;
+            }
+            for (var i = 0; i < AudioManager._QAudioBuffers.length; i++) {
+              if (AudioManager._QAudioBuffers[i].uid !== id) {
+                newId = true;
+              } else {
+                counter++;
+                id = "*" + counter;
+              }
+            }
+          }
+        }
         var type = args[2].toLowerCase();
         var audio = {
           name: args[3],
@@ -87,7 +110,7 @@ Imported.QuasiAudio = 1.00;
           x = null;
           y = null;
         }
-        AudioManager.playQAudio(id, type, audio, max, r, x, y, bindTo);
+        AudioManager.playQAudio(id, type, audio, loop, max, r, x, y, bindTo);
         return;
       }
       if (args[0].toLowerCase() === "stop") {
@@ -106,7 +129,7 @@ Imported.QuasiAudio = 1.00;
 
   AudioManager._QAudioBuffers = [];
 
-  AudioManager.playQAudio = function(id, type, audio, maxVolume, r, x, y, bindTo) {
+  AudioManager.playQAudio = function(id, type, audio, loop, maxVolume, r, x, y, bindTo) {
     if (audio.name) {
       this._QAudioBuffers = this._QAudioBuffers.filter(function(audio) {
         if (audio.uid === id) {
@@ -117,7 +140,6 @@ Imported.QuasiAudio = 1.00;
         return audio.isPlaying();
       });
       var buffer = this.createBuffer(type, audio.name);
-      this.updateQAudioParameters(buffer, this._bgmVolume, audio);
       if (bindTo) {
         Object.defineProperty(buffer, 'mapX', {
           get: function() {
@@ -137,7 +159,10 @@ Imported.QuasiAudio = 1.00;
       buffer.radius = r;
       buffer.maxVolume = maxVolume;
       this.updateQAudioDistance(buffer);
-      buffer.play(true, 0);
+      buffer.play(loop, 0);
+      if (!loop) {
+        buffer.addStopListener(this.stopQAudio.bind(this, id));
+      }
       this._QAudioBuffers.push(buffer);
     }
   };
@@ -146,8 +171,8 @@ Imported.QuasiAudio = 1.00;
     var buffers = this._QAudioBuffers;
     for (var i = buffers.length - 1; i >= 0; i--) {
       if (buffers[i].uid === id) {
-        buffer.stop();
-        buffer = null;
+        buffers[i].stop();
+        buffers[i] = null;
         buffers.splice(i, 1);
       }
     }
@@ -171,6 +196,9 @@ Imported.QuasiAudio = 1.00;
     volume *= buffer.maxVolume * (this._bgmVolume / 100);
     buffer.volume = volume;
     var pan = Math.cos(radian);
+    if (x2 === x1 && y2 === y1) {
+      pan = 0;
+    }
     buffer.pan = pan;
   };
 
