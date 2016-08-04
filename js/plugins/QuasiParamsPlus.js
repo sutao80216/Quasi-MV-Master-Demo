@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Params Plus
-// Version: 1.14
-// Last Update: July 10, 2016
+// Version: 1.15
+// Last Update: August 4, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -16,11 +16,11 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_ParamsPlus = 1.14;
+Imported.Quasi_ParamsPlus = 1.15;
 
 //=============================================================================
  /*:
- * @plugindesc v1.14 Adds improvements to parameters
+ * @plugindesc v1.15 Adds improvements to parameters
  * <QuasiParamsPlus>
  *
  * @author Quasi      Site: http://quasixi.com
@@ -679,16 +679,18 @@ var QuasiParams = {};
     Alias_Game_Action_applyItemUserEffect.call(this, target);
     var value = Math.floor(this.subject().tcc);
     this.subject().gainSilentTp(value);
-    var obj = QuasiParams.itemParamsPlus(this.item());
-    for (var param in obj) {
-      if (!obj.hasOwnProperty(param)) continue;
-      var string = obj[param];
-      if (param < 8) {
-        var value = this.subject().evalParamFormula(string, this.subject().param(param));
-        this.subject().addParam(param, value);
-      } else if (param > 16) {
-        var value = this.subject().evalParamFormula(string, this.subject().qParam(param));
-        this.subject().addCParam(param - 17, value);
+    if (DataManager.isItem(this.item())) {
+      var obj = QuasiParams.itemParamsPlus(this.item());
+      for (var param in obj) {
+        if (!obj.hasOwnProperty(param)) continue;
+        var string = obj[param];
+        if (param < 8) {
+          var value = this.subject().evalParamFormula(string, this.subject().param(param));
+          this.subject().addParam(param, value);
+        } else if (param > 16) {
+          var value = this.subject().evalParamFormula(string, this.subject().qParam(param));
+          this.subject().addCParam(param - 17, value);
+        }
       }
     }
   };
