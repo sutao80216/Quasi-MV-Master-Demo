@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Audio
-// Version: 1.01
-// Last Update: July 25, 2016
+// Version: 1.02
+// Last Update: August 7, 2016
 //=============================================================================
 // ** Terms of Use
 // https://github.com/quasixi/Quasi-MV-Master-Demo/blob/master/README.md
@@ -15,11 +15,11 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiAudio = 1.01;
+Imported.QuasiAudio = 1.02;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Quasi Audio
+ * @plugindesc v1.02 Quasi Audio
  * @author Quasi
  *
  * @help
@@ -78,15 +78,17 @@ Imported.QuasiAudio = 1.01;
           while(!newId) {
             if (AudioManager._QAudioBuffers.length === 0) {
               newId = true;
+              break;
             }
+            counter++;
+            id = "*" + counter;
+            var j = 0;
             for (var i = 0; i < AudioManager._QAudioBuffers.length; i++) {
               if (AudioManager._QAudioBuffers[i].uid !== id) {
-                newId = true;
-              } else {
-                counter++;
-                id = "*" + counter;
+                j++
               }
             }
+            newId = j === i;
           }
         }
         var type = args[2].toLowerCase();
@@ -137,7 +139,7 @@ Imported.QuasiAudio = 1.01;
           audio = null;
           return false;
         }
-        return audio.isPlaying();
+        return audio._autoPlay || audio.isPlaying();
       });
       var buffer = this.createBuffer(type, audio.name);
       if (bindTo) {
@@ -209,6 +211,7 @@ Imported.QuasiAudio = 1.01;
   };
 
   AudioManager.stopAllQAudio = function() {
+    console.log("stop all");
     this._QAudioBuffers.forEach(function(buffer) {
       buffer.stop();
     });
@@ -230,5 +233,11 @@ Imported.QuasiAudio = 1.01;
   Scene_Map.prototype.update = function() {
     Alias_Scene_Map_update.call(this);
     AudioManager.updateQAudio();
+  };
+
+  var Alias_Game_Map_setup = Game_Map.prototype.setup;
+  Game_Map.prototype.setup = function(mapId) {
+    AudioManager.stopAllQAudio();
+    Alias_Game_Map_setup.call(this, mapId);
   };
 }());
