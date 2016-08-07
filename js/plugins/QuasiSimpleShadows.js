@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Simple Shadows
-// Version: 1.051
-// Last Update: June 4, 2016
+// Version: 1.052
+// Last Update: June 17, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -16,19 +16,17 @@
 //  - Add plugin through the plugin manager
 //  - Configure as needed
 //  - Open the Help menu for setup guide or visit one of the following:
-//  - - http://quasixi.com/quasi-simple-shadows/
 //  - - http://forums.rpgmakerweb.com/index.php?/topic/58685-quasi-simple-shadows/
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSimpleShadows = 1.051;
+Imported.QuasiSimpleShadows = 1.052;
 
 //=============================================================================
  /*:
- * @plugindesc Adds Simple Shadows to characters
- * Version 1.051
+ * @plugindesc Version 1.052 Adds Simple Shadows to characters
  * <QuasiSimpleShadows>
- * @author Quasi       Site: http://quasixi.com
+ * @author Quasi
  *
  * @param Default Source Radius
  * @desc Set the default radius for the source in Pixels
@@ -56,16 +54,9 @@ Imported.QuasiSimpleShadows = 1.051;
  *
  * @help
  * ============================================================================
- * ** Quasi Simple Shadows v1.051
- * ============================================================================
  * ** Links
  * ============================================================================
  * For a guide on how to use this plugin go to:
- *
- *    http://quasixi.com/quasi-simple-shadows/
- *
- * Other Links
- *  - https://github.com/quasixi/Quasi-MV-Master-Demo
  *  - http://forums.rpgmakerweb.com/index.php?/topic/58685-quasi-simple-shadows/
  * ============================================================================
  */
@@ -123,7 +114,7 @@ var QuasiSimpleShadows = {};
       $gamePlayer.simpleShadowMembers();
       QuasiSimpleShadows._sources = [];
       QuasiSimpleShadows._shadowLayer = new Sprite();
-      QuasiSimpleShadows._shadowLayer.z = 0;
+      QuasiSimpleShadows._shadowLayer.z = 1;
       for (var i = 0; i < this.events().length; i++) {
         this.events()[i].getSimpleShadow();
       }
@@ -145,22 +136,39 @@ var QuasiSimpleShadows = {};
         var str = Number(args[3]);
         var delay = Number(args[4]);
         chara.setupSimpleShadow(radius, str, delay);
+        return;
       }
       if (args[0].toLowerCase() === "removeshadowsource") {
         var id = Number(args[1]);
         var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
         chara.clearSimpleShadow();
+        return;
       }
       if (args[0].toLowerCase() === "hideshadow") {
         var id = Number(args[1]);
         var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
         chara.setHasShadow(false);
+        return;
       }
-
       if (args[0].toLowerCase() === "showshadow") {
         var id = Number(args[1]);
         var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
         chara.setHasShadow(true);
+        return;
+      }
+      if (args[0].toLowerCase() === "setshadowoffset") {
+        var id = Number(args[1]);
+        var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
+        chara._shadowOffset.x = Number(args[2]) || 0;
+        chara._shadowOffset.y = Number(args[3]) || 0;
+        return;
+      }
+      if (args[0].toLowerCase() === "setshadowanchor") {
+        var id = Number(args[1]);
+        var chara = id === 0 ? $gamePlayer : $gameMap.event(id);
+        chara._shadowAnchor.x = isNaN(Number(args[2])) ? 0.5 : Number(args[2]);
+        chara._shadowAnchor.y = isNaN(Number(args[3])) ? 1 : Number(args[3]);
+        return;
       }
     }
     Alias_Game_Interpreter_pluginCommand.call(this, command, args);
@@ -184,6 +192,8 @@ var QuasiSimpleShadows = {};
     this._shadowRemoveQueue = [];
     this._addedShadows = null;
     this._hasShadow = true;
+    this._shadowOffset = {x: 0, y: 0};
+    this._shadowAnchor = {x: 0.5, y: 1};
   }
 
   Game_CharacterBase.prototype.addShadow = function(source) {
@@ -249,19 +259,58 @@ var QuasiSimpleShadows = {};
   };
 
   Game_CharacterBase.prototype.shadowOffsetX = function() {
-    return 0;
+    return this._shadowOffset.x;
   };
 
   Game_CharacterBase.prototype.shadowOffsetY = function() {
-    return 0;
+    return this._shadowOffset.y;
   };
 
   Game_CharacterBase.prototype.shadowAnchorX = function() {
-    return 0.5;
+    return this._shadowAnchor.x;
   };
 
   Game_CharacterBase.prototype.shadowAnchorY = function() {
-    return 1;
+    return this._shadowAnchor.y;
+  };
+
+  //-----------------------------------------------------------------------------
+  // Game_Player
+  //
+  // The game object class for the player. It contains event starting
+  // determinants and map scrolling functions.
+
+  var Alias_Game_Player_refresh = Game_Player.prototype.refresh;
+  Game_Player.prototype.refresh = function() {
+    Alias_Game_Player_refresh.call(this);
+    if ($gameParty.leader()) {
+      this.setupShadowOffset();
+      this.setupShadowAnchor();
+    }
+  };
+
+  Game_Player.prototype.setupShadowOffset = function() {
+    var comments = $gameParty.leader().actor().note;
+    var offsetX = /<shadowOX:(-?\d+?)>/i.exec(comments);
+    if (offsetX) {
+      this._shadowOffset.x = Number(offsetX[1]);
+    }
+    var offsetY = /<shadowOY:(-?\d+?)>/i.exec(comments);
+    if (offsetY) {
+      this._shadowOffset.y = Number(offsetY[1]);
+    }
+  };
+
+  Game_Player.prototype.setupShadowAnchor = function() {
+    var comments = $gameParty.leader().actor().note;
+    var anchorX = /<shadowAnchorX:(.*?)>/i.exec(comments);
+    if (anchorX) {
+      this._shadowAnchor.x = Number(anchorX[1]);
+    }
+    var anchorY = /<shadowAnchorY:(.*?)>/i.exec(comments);
+    if (anchorY) {
+      this._shadowAnchor.y = Number(anchorY[1]);
+    }
   };
 
   //-----------------------------------------------------------------------------
@@ -279,6 +328,37 @@ var QuasiSimpleShadows = {};
   Game_Event.prototype.setDefaultHasShadow = function() {
     var notes = this.event().note || "";
     this._hasShadow = !(/<noshadow>/i.test(notes));
+  };
+
+  var Alias_Game_Event_setupPageSettings = Game_Event.prototype.setupPageSettings;
+  Game_Event.prototype.setupPageSettings = function() {
+    Alias_Game_Event_setupPageSettings.call(this);
+    this.setupShadowOffset();
+    this.setupShadowAnchor();
+  };
+
+  Game_Event.prototype.setupShadowOffset = function() {
+    var comments = this.comments();
+    var offsetX = /<shadowOX:(-?\d+?)>/i.exec(comments);
+    if (offsetX) {
+      this._shadowOffset.x = Number(offsetX[1]);
+    }
+    var offsetY = /<shadowOY:(-?\d+?)>/i.exec(comments);
+    if (offsetY) {
+      this._shadowOffset.y = Number(offsetY[1]);
+    }
+  };
+
+  Game_Event.prototype.setupShadowAnchor = function() {
+    var comments = this.comments();
+    var anchorX = /<shadowAnchorX:(.*?)>/i.exec(comments);
+    if (anchorX) {
+      this._shadowAnchor.x = Number(anchorX[1]);
+    }
+    var anchorY = /<shadowAnchorY:(.*?)>/i.exec(comments);
+    if (anchorY) {
+      this._shadowAnchor.y = Number(anchorY[1]);
+    }
   };
 
   Game_Event.prototype.getSimpleShadow = function() {
@@ -311,30 +391,6 @@ var QuasiSimpleShadows = {};
       return list.parameters;
     });
     return comments.join('\n');
-  };
-
-  Game_Event.prototype.shadowOffsetX = function() {
-    var comments = this.comments();
-    var offset = /<shadowOX:(-?\d+?)>/i.exec(comments);
-    return offset ? Number(offset[1]) : 0;
-  };
-
-  Game_Event.prototype.shadowOffsetY = function() {
-    var comments = this.comments();
-    var offset = /<shadowOY:(-?\d+?)>/i.exec(comments);
-    return offset ? Number(offset[1]) : 0;
-  };
-
-  Game_Event.prototype.shadowAnchorX = function() {
-    var comments = this.comments();
-    var anchor = /<shadowAnchorX:(.*?)>/i.exec(comments);
-    return anchor ? Number(anchor[1]) : 0.5;
-  };
-
-  Game_Event.prototype.shadowAnchorY = function() {
-    var comments = this.comments();
-    var anchor = /<shadowAnchorY:(.*?)>/i.exec(comments);
-    return anchor ? Number(anchor[1]) : 1;
   };
 
   //-----------------------------------------------------------------------------
@@ -433,8 +489,8 @@ var QuasiSimpleShadows = {};
     this.updateBitmap();
     this.updateFrame();
     this.updatePosition();
-    this.updateRotation();
     this.updateScaleOpacity();
+    this.updateRotation();
     this.updateFlicker();
   };
 
