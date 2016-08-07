@@ -16,7 +16,6 @@
 //  - Add plugin through the plugin manager
 //  - Configure as needed
 //  - Open the Help menu for setup guide or visit one of the following:
-//  - - http://quasixi.com/quasi-puzzle-a
 //  - - http://forums.rpgmakerweb.com/index.php?/topic/58256-quasi-puzzle/
 //=============================================================================
 
@@ -29,7 +28,7 @@ Imported.QuasiPuzzleA = 1.01;
  * Makes creating puzzle mechanics easier.
  * <QuasiPuzzleA>
  *
- * @author Quasi       Site: http://quasixi.com
+ * @author Quasi
  *
  * @help
  * ============================================================================
@@ -37,11 +36,7 @@ Imported.QuasiPuzzleA = 1.01;
  * ============================================================================
  * For a guide on how to use this plugin go to:
  *
- *   http://quasixi.com/quasi-puzzle-a
- *
- * Other Links
- *  - https://github.com/quasixi/Quasi-MV-Master-Demo
- *  - http://forums.rpgmakerweb.com/index.php?/topic/58256-quasi-puzzle/
+ *   http://forums.rpgmakerweb.com/index.php?/topic/58256-quasi-puzzle/
  * ============================================================================
  */
 //=============================================================================
