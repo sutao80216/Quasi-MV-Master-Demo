@@ -11,7 +11,6 @@
 //  - Save this file as "QuasiParamsPlus.js" in your js/plugins/ folder
 //  - Add plugin through the plugin manager
 //  - Open the Help menu for setup guide or visit one of the following:
-//  - - http://quasixi.com/mv/
 //  - - http://forums.rpgmakerweb.com/index.php?/topic/48777-quasi-params-plus/
 //=============================================================================
 
@@ -187,7 +186,6 @@ Imported.Quasi_ParamsPlus = 1.15;
  *  * params is not case sensative
  * =============================================================================
  *  * Links
- *  - http://quasixi.com/mv/
  *  - http://forums.rpgmakerweb.com/index.php?/topic/48777-quasi-params-plus/
  */
 //=============================================================================
