@@ -16,8 +16,6 @@
 //  - Add plugin through the plugin manager
 //  - - Place somewhere below QuasiInput
 //  - Configure as needed
-//  - Open the Help menu for setup guide or visit one of the following:
-//  - - http://quasixi.com/mv/input/
 //============================================================================
 
 var Imported = Imported || {};
@@ -117,10 +115,6 @@ Imported.Quasi_InputRemap = 1.00;
  *
  * * cancel remaps to escape
  * =============================================================================
- * Links
- *  - http://quasixi.com/mv/input/
- *  - https://github.com/quasixi/RPG-Maker-MV
- *  - http://forums.rpgmakerweb.com/index.php?/user/25663-quasi/
  */
 //=============================================================================
 
