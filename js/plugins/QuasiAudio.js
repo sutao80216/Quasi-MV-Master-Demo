@@ -1,6 +1,6 @@
 //=============================================================================
 // Quasi Audio
-// Version: 1.02
+// Version: 1.03
 // Last Update: August 7, 2016
 //=============================================================================
 // ** Terms of Use
@@ -15,11 +15,11 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiAudio = 1.02;
+Imported.QuasiAudio = 1.03;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Quasi Audio
+ * @plugindesc v1.03 Quasi Audio
  * @author Quasi
  *
  * @help
@@ -131,6 +131,20 @@ Imported.QuasiAudio = 1.02;
 
   AudioManager._QAudioBuffers = [];
 
+  // Duplicate of the AudioManager.createNewBuffer from rpg_managers.js
+  // TDDP PreloadManager overrides this to cache, but that will not
+  // let you use multiple of the same audio file, so I copied this function over
+  AudioManager.createNewBuffer = function(folder, name) {
+    var ext = this.audioFileExt();
+    var url = this._path + folder + '/' + encodeURIComponent(name) + ext;
+    if (this.shouldUseHtml5Audio() && folder === 'bgm') {
+      Html5Audio.setup(url);
+      return Html5Audio;
+    } else {
+      return new WebAudio(url);
+    }
+  };
+
   AudioManager.playQAudio = function(id, type, audio, loop, maxVolume, r, x, y, bindTo) {
     if (audio.name) {
       this._QAudioBuffers = this._QAudioBuffers.filter(function(audio) {
@@ -141,7 +155,7 @@ Imported.QuasiAudio = 1.02;
         }
         return audio._autoPlay || audio.isPlaying();
       });
-      var buffer = this.createBuffer(type, audio.name);
+      var buffer = this.createNewBuffer(type, audio.name);
       if (bindTo) {
         Object.defineProperty(buffer, 'mapX', {
           get: function() {
@@ -211,7 +225,6 @@ Imported.QuasiAudio = 1.02;
   };
 
   AudioManager.stopAllQAudio = function() {
-    console.log("stop all");
     this._QAudioBuffers.forEach(function(buffer) {
       buffer.stop();
     });
