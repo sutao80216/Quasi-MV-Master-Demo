@@ -1,7 +1,7 @@
 //=============================================================================
 // Quasi Simple Shadows
-// Version: 1.052
-// Last Update: June 17, 2016
+// Version: 1.053
+// Last Update: August 10, 2016
 //=============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -20,11 +20,11 @@
 //=============================================================================
 
 var Imported = Imported || {};
-Imported.QuasiSimpleShadows = 1.052;
+Imported.QuasiSimpleShadows = 1.053;
 
 //=============================================================================
  /*:
- * @plugindesc Version 1.052 Adds Simple Shadows to characters
+ * @plugindesc Version 1.053 Adds Simple Shadows to characters
  * <QuasiSimpleShadows>
  * @author Quasi
  *
@@ -470,14 +470,15 @@ var QuasiSimpleShadows = {};
     this._sourceFlickerDelay = source._simpleShadowFlickerDelay;
     this.setBlendColor([0, 0, 0, 255]);
     if (QuasiSimpleShadows.enableBlur) {
-      var blur = new PIXI.BlurFilter();
+      var blur = new PIXI.filters.BlurFilter();
       blur.blur = QuasiSimpleShadows.blurStr;
       this.filters = [blur];
     }
-    //  bottom lines need pixi v3+ to allow using sprites as a mask
-    //this._gradient = QuasiSimpleShadows.radialGradient(this._sourceRadius, "transparent", "black");
-    //this.addChild(this._gradient);
-    //this.mask = this._gradient;
+    // Bottom lines are for a gradient mask, though I can't remember how to
+    // do an alpha mask in pixi, so it's left out for now
+    //var gradient = QuasiSimpleShadows.radialGradient(this._sourceRadius, "black", "transparent");
+    //this.addChild(gradient);
+    //this.mask = gradient;
   };
 
   Sprite_CharacterShadow.prototype.update = function() {
