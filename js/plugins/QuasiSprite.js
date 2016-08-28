@@ -1,7 +1,7 @@
 //============================================================================
 // Quasi Sprite
-// Version: 1.086
-// Last Update: June 27, 2016
+// Version: 1.10
+// Last Update: August 27, 2016
 //============================================================================
 // ** Terms of Use
 // http://quasixi.com/terms-of-use/
@@ -16,11 +16,11 @@
 //============================================================================
 
 var Imported = Imported || {};
-Imported.Quasi_Sprite = 1.086;
+Imported.Quasi_Sprite = 1.10;
 
 //=============================================================================
  /*:
- * @plugindesc Version 1.086 Lets you configure Spritesheets
+ * @plugindesc v1.10 Lets you configure Spritesheets
  * <QuasiSprite>
  * @author Quasi
  *
@@ -36,7 +36,9 @@ Imported.Quasi_Sprite = 1.086;
  * For a guide on how to use this plugin go to:
  *
  *   http://forums.rpgmakerweb.com/index.php?/topic/57648-quasi-sprite/
- *   
+ * Sprite App:
+ *   https://github.com/quasixi/SpriteAnimator
+ *
  */
 //=============================================================================
 
@@ -328,6 +330,17 @@ var QuasiSprite = { ready: false };
   //
   // The sprite for displaying a character.
 
+  var Alias_Sprite_Character_updateBitmap = Sprite_Character.prototype.updateBitmap;
+  Sprite_Character.prototype.updateBitmap = function() {
+    if (this.isImageChanged()) {
+      Alias_Sprite_Character_updateBitmap.call(this);
+      if (this._character.isQCharacter()) {
+        this.anchor.x = this._character.qSprite().anchorX || 0.5;
+        this.anchor.y = this._character.qSprite().anchorY || 1;
+      }
+    }
+  };
+
   var Alias_Sprite_Character_characterBlockX = Sprite_Character.prototype.characterBlockX;
   Sprite_Character.prototype.characterBlockX = function() {
     if (this._character.isQCharacter()) return 0;
@@ -506,7 +519,6 @@ if (Imported.YEP_BattleEngineCore) {
   Sprite_Actor.prototype.forceMotion = function(motionType) {
     if (this.isQCharacter()) {
       var pose = motionType;
-      console.log(pose);
       var motion = this._qSprite.poses[pose];
       if (motion) {
         this._pose = pose;
