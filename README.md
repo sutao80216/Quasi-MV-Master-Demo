@@ -1,7 +1,5 @@
 Quasi MV Master Demo
 ====================
-<b>Documentation:</b>
-<a href="http://quasixi.com/quasi-movement-documentation/">quasixi.com</a>
 
 <b>Downloading Demo:</b><br>
 Click on the Download Zip button on the upper right of the page<br>
