@@ -1,6 +1,7 @@
 Quasi MV Master Demo
 ====================
-
+NO LONGER SUPPORTED, PLEASE USE [QPlugins](https://github.com/quxios/QMV-Master-Demo)
+===================
 <b>Downloading Demo:</b><br>
 Click on the Download Zip button on the upper right of the page<br>
 ![2016-03-17 13_45_11-quasixi_quasi-mv-master-demo_ master demo for quasi s plugins for rpg maker mv](https://cloud.githubusercontent.com/assets/9346563/13860612/87321562-ec46-11e5-88f0-c0da7027c441.png)
